@@ -12,6 +12,8 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 
+app.use(require('./routes/stats-route'));
+
 const PORT = process.env.PORT;
 if (!module.parent){
   if (!PORT){

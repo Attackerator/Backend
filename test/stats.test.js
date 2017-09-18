@@ -17,6 +17,7 @@ describe('stats creation', function() {
   describe('create stats', function() {
     it('should return stats', function() {
       Stats.createStats(testBody)
+        .save()
         .then(res => {
           expect(res).to.deep.equal(testBody);
           debug(res);

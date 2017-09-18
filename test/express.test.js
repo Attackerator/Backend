@@ -4,7 +4,7 @@ const app = require('../server');
 const request = require('supertest')(app);
 
 describe('Express Infrastructure', function(){
-  describe('sould return 404', function(){
+  describe('should return 404', function(){
     it ('should return 404', function(){
       return request
         .get('/404')
