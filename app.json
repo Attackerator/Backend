@@ -1,0 +1,16 @@
+{
+  "name": "backAttackerator",
+  "description": "Back end for the original dv-201 Attackerator project",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
