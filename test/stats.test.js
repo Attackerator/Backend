@@ -18,7 +18,6 @@ describe('stats creation', function() {
   describe('create stats', function() {
     it('should return stats', function() {
       return Stats.createStats(testBody)
-        .save()
         .then(saved => {
           expect(saved.strength).to.deep.equal(4);
           expect(saved.dexterity).to.deep.equal(5);

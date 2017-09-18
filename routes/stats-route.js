@@ -11,7 +11,6 @@ const router = module.exports = new Router();
 router.post('/api/stats', jsonParser, function (req, res, next) {
   debug('POST /api/stats');
   Stats.createStats(req.body)
-    .save()
     .then(stat => res.json(stat))
     .catch(next);
 });
