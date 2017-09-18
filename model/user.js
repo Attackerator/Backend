@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const debug = require('debug')('app:model/user');
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 
@@ -30,6 +30,18 @@ userSchema.methods.generatePasswordHash = function (password){
   });
 };
 
+userSchema.methods.generateFindHash = function (){
+  //make a find hash here
+};
+
+userSchema.methods.generateToken = function (){
+  debug('generateToken');
+  return new Promise ((resolve, reject) =>{
+    this.generateFindHash()
+      .then(findHash => resolve(jwt.sign({token: findHash }, process.env.APP_SECRET)))
+      .catch(reject);
+  });
+};
 
 const User = module.exports = mongoose.models.user || mongoose.model('user', userSchema);
 
