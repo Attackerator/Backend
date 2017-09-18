@@ -1,21 +1,16 @@
 'use strict';
 
 const debug = require('debug')('app:test/user.test');
-const User = require('../model/user');
 const { expect } = require('chai');
+const helper = require('../test/test-helper');
 
-const testBody = {
-  username: 'MrDonkey1028'
-  ,email: 'donkey@example.com'
-  ,password: 'mule'
-};
 
 describe('user creation', function () {
   describe('create user', function (){
     it('should return a user', function (){
-      User.createUser(testBody)
+      helper.user
         .then(res => {
-          expect(res).to.deep.equal(testBody);
+          expect(res).to.deep.equal(helper.user);
           debug(res);
         });
     });
