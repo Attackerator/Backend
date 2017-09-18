@@ -1,7 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const debug = require('debug')('app:model/user');
@@ -31,7 +31,15 @@ userSchema.methods.generatePasswordHash = function (password){
 };
 
 userSchema.methods.generateFindHash = function (){
-  //make a find hash here
+  debug('generateFindHash');
+  return new Promise((resolve, reject) => {
+    this.findHash = crypto.randomBytes(32).toString('hex');
+    this.save()
+      .then(() => resolve(this.findHash))
+      .catch(err => {
+        return reject(err);
+      });
+  });
 };
 
 userSchema.methods.generateToken = function (){
