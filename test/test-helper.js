@@ -34,9 +34,11 @@ const testCharacter = Character.createCharacter(exampleCharacter);
 debug('testUser');
 
 const deleteCharacter = function(){
-  User.remove({});
-  Stats.remove({});
-  Character.remove({});
+  Promise.all([
+    User.remove({}),
+    Stats.remove({}),
+    Character.remove({}),
+  ]);
 };
 
 module.exports = {
