@@ -5,6 +5,7 @@ const request = require('supertest')(app);
 const { expect } = require('chai');
 const debug = require('debug')('app:test/character');
 require('../lib/mongoose-connect');
+const helper = require('./test-helper');
 
 const User = require('../model/user');
 
@@ -12,16 +13,17 @@ const exampleCharacter = {
   name: 'dustinyschild'
 };
 
+var newUser;
+
 describe('Character Routes',function(){
   describe('POST /api/character',function(){
     beforeEach(function(){
-      return User.createUser({
-        username:'username',
-        password:'password',
-        email:'example@example.com',
-      }).then(user => {
-        debug(user);
-      });
+      return helper.user
+        .then(user => {
+          newUser = user;
+          exampleCharacter.user = newUser._id;
+          debug(newUser);
+        });
     });
     afterEach(function(){
       return User.remove({});

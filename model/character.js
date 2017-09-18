@@ -5,7 +5,7 @@ const { Schema } = require('mongoose');
 const debug = require('debug')('app:model/character');
 
 const characterSchema = {
-  user: { type: Schema.Types.ObjectId },
+  user: { type: Schema.Types.ObjectId, required: true },
   name: { type: String, required: true },
   stats: { type: Schema.Types.ObjectId },
   skills: { type: Schema.Types.ObjectId },
