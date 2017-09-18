@@ -19,6 +19,8 @@ describe('Character Routes',function(){
         username:'username',
         password:'password',
         email:'example@example.com',
+      }).then(user => {
+        debug(user);
       });
     });
     afterEach(function(){
@@ -35,7 +37,7 @@ describe('Character Routes',function(){
     it('should return 401 if no body is provided',function(){
       return request.post('/api/character')
         .send()
-        .expect(401);
+        .expect(400);
     });
   });
 });
