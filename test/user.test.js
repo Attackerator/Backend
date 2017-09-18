@@ -6,6 +6,9 @@ const helper = require('../test/test-helper');
 
 
 describe('user creation', function () {
+  afterEach(function(){
+    return helper.kill();
+  });
   describe('create user', function (){
     it('should return a user', function (){
       helper.user
