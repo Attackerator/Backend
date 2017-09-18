@@ -9,3 +9,6 @@
   script:
     - npm test
     - npm run lint
+  branches:
+  only:
+  - master
