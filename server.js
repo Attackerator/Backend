@@ -12,8 +12,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 
+<<<<<<< HEAD
 app.use(require('./routes/stats-route'));
 app.use(require('./routes/character-routes'));
+=======
+app.use(require('./routes/user-routes'));
+>>>>>>> POST to /api/user working with valid request
 
 const PORT = process.env.PORT;
 if (!module.parent){

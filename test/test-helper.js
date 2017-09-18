@@ -26,7 +26,7 @@ const exampleCharacter ={
   name: 'SuperDonkey',
 };
 
-const testUser = User.createUser(exampleBody);
+const testUser = User.createUser(exampleBody).then(user => user.generateFindHash());
 debug('testUser');
 //const testStats = Stats.createStats(exampleStats);
 //debug('testStats');

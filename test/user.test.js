@@ -15,6 +15,9 @@ describe('user creation', function () {
         .then(res => {
           expect(res).to.deep.equal(helper.user);
           debug(res);
+        })
+        .catch(err => {
+          return err;
         });
     });
   });
