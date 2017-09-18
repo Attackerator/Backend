@@ -14,8 +14,7 @@ router.post('/api/character',jsonParser,(req,res,next) => {
   debug(req.body);
 
   if (!req.body.hasOwnProperty('name')){
-    next(createError(400));
-    res.sendStatus(400);
+    return next(createError(400, 'name required'));
   }
   createCharacter({
     ...req.body

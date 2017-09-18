@@ -33,6 +33,7 @@ describe('Character Routes',function(){
         .send(exampleCharacter)
         .expect(200)
         .expect(res => {
+          debug(res.body.name);
           expect(res.body.name).to.equal('dustinyschild');
         });
     });
