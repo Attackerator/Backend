@@ -15,9 +15,9 @@ const characterSchema = {
   sayings: { type: Schema.Types.ObjectId }
 };
 
-const Character = module.exports = mongoose.models.character || mongoose.model('Character',characterSchema);
+const Character = module.exports = mongoose.models.character || mongoose.model('character',characterSchema);
 
 Character.createCharacter = function(character){
   debug(character);
-  return new Character(...character).save();
+  return new Character(character).save();
 };
