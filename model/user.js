@@ -1,11 +1,11 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+//const crypto = require('crypto');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const debug = require('debug')('app:model/user');
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 
@@ -29,6 +29,7 @@ userSchema.methods.generatePasswordHash = function (password){
     });
   });
 };
+
 
 const User = module.exports = mongoose.models.user || mongoose.model('user', userSchema);
 
