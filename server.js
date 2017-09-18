@@ -5,11 +5,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const debug = require('debug')('app:server');
 
-//require('dotenv').load();
+require('dotenv').load();
 
 const app = express();
-
-require('./lib/mongoose-connect');
 
 app.use(morgan('dev'));
 app.use(cors());
