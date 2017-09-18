@@ -12,7 +12,7 @@ const exampleBody = {
   ,email: 'donkey@example.com'
   ,password: 'mule'
 };
-/*
+
 const exampleStats = {
   strength:'',
   dexterity:'',
@@ -21,7 +21,7 @@ const exampleStats = {
   charisma:'',
   wisdom:'',
 };
-*/
+
 const exampleCharacter ={
   name: 'SuperDonkey',
 };

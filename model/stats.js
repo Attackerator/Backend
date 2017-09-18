@@ -17,5 +17,5 @@ const Stats = module.exports = mongoose.models.stat || mongoose.model('stat', st
 
 Stats.createStats = function(body) {
   debug('createStat', body);
-  return new Stats(body);
+  return new Stats(body);    
 };
