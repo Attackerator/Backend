@@ -1,11 +1,11 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const debug = require('debug')('app:model/user');
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 
@@ -30,6 +30,26 @@ userSchema.methods.generatePasswordHash = function (password){
   });
 };
 
+userSchema.methods.generateFindHash = function (){
+  debug('generateFindHash');
+  return new Promise((resolve, reject) => {
+    this.findHash = crypto.randomBytes(32).toString('hex');
+    this.save()
+      .then(() => resolve(this.findHash))
+      .catch(err => {
+        return reject(err);
+      });
+  });
+};
+
+userSchema.methods.generateToken = function (){
+  debug('generateToken');
+  return new Promise ((resolve, reject) =>{
+    this.generateFindHash()
+      .then(findHash => resolve(jwt.sign({token: findHash }, process.env.APP_SECRET)))
+      .catch(reject);
+  });
+};
 
 const User = module.exports = mongoose.models.user || mongoose.model('user', userSchema);
 
