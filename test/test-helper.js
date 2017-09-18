@@ -36,6 +36,7 @@ debug('testUser');
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
+    //Stats.remove({}),
     Stats.remove({}),
     Character.remove({}),
   ]);
