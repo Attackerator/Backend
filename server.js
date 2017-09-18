@@ -19,6 +19,8 @@ app.use(require('./routes/character-routes'));
 app.use(require('./routes/user-routes'));
 >>>>>>> POST to /api/user working with valid request
 
+app.use(require('./lib/error-middleware.js'));
+
 const PORT = process.env.PORT;
 if (!module.parent){
   if (!PORT){
