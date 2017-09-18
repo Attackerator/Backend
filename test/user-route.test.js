@@ -34,7 +34,6 @@ describe('user routes', function(){
           .send(exampleUser)
           .expect(200)
           .expect(res => {
-            debug(res);
             debug(res.text);
             expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');//this is algorithm and type for jwt
           });
