@@ -16,4 +16,18 @@ const userSchema = Schema({
   ,findHash: {type: String, unique: true}
 });
 
+userSchema.methods.generatePasswordHash = function (password){
+  debug('generatePasswordHash');
+  return new Promise ((resolve,reject) => {
+    if(!password){
+      return reject(createError(400, 'password required'));
+    }
+    bcrypt.hash(password,10,(err,hash) => {
+      if (err) return reject(err);
+      this.password = hash;
+      return resolve(this);
+    });
+  });
+};
+
 module.exports = mongoose.models.user || mongoose.model('user', userSchema);
