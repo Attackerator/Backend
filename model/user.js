@@ -35,7 +35,7 @@ userSchema.methods.generateFindHash = function (){
   return new Promise((resolve, reject) => {
     this.findHash = crypto.randomBytes(32).toString('hex');
     this.save()
-      .then(() => resolve(this.findHash))
+      .then(() => resolve(this))
       .catch(err => {
         return reject(err);
       });
@@ -46,7 +46,7 @@ userSchema.methods.generateToken = function (){
   debug('generateToken');
   return new Promise ((resolve, reject) =>{
     this.generateFindHash()
-      .then(findHash => resolve(jwt.sign({token: findHash }, process.env.APP_SECRET)))
+      .then(obj => resolve(jwt.sign({token: obj.findHash }, process.env.APP_SECRET)))
       .catch(reject);
   });
 };
