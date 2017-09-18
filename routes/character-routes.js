@@ -11,6 +11,9 @@ const router = module.exports = new Router();
 
 router.post('/api/character',jsonParser,(req,res,next) => {
   debug(`POST /api/character`);
+  debug(req.body);
+
+  if (!req.body.hasOwnProperty('name')) res.sendStatus(401);
 
   createCharacter({
     ...req.body

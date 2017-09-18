@@ -32,5 +32,10 @@ describe('Character Routes',function(){
           expect(res.body.name).to.equal('dustinyschild');
         });
     });
+    it('should return 401 if no body is provided',function(){
+      return request.post('/api/character')
+        .send()
+        .expect(401);
+    });
   });
 });
