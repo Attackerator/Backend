@@ -12,6 +12,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 
+app.use(require('./routes/stats-route'));
 app.use(require('./routes/character-routes'));
 
 const PORT = process.env.PORT;

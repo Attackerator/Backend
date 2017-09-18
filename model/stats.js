@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const debug = require('debug')('app:model/stats');
 
 const statSchema = Schema({
   strength: { type: Number, required: true, default: 3},
@@ -12,4 +13,9 @@ const statSchema = Schema({
   wisdom: { type: Number, required: true, default: 3}
 });
 
-module.exports = mongoose.models.stat || mongoose.model('stat', statSchema);
+const Stats = module.exports = mongoose.models.stat || mongoose.model('stat', statSchema);
+
+Stats.createStats = function(body) {
+  debug('createStat', body);
+  return new Stats(body).save();    
+};
