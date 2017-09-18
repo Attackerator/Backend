@@ -13,6 +13,14 @@ const exampleUser = {
   ,password: 'password!'
   ,email: 'example@example.com'
 };
+const missingPassUser = {
+  username: 'example'
+  ,email: 'example@example.com'
+};
+const missingUserUser = {
+  password: 'password!'
+  ,email: 'example@example.com'
+};
 
 describe('user routes', function(){
   describe('POST /api/user', function(){
@@ -29,6 +37,31 @@ describe('user routes', function(){
             debug(res.text);
             expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
           });
+      });
+    });
+    describe('with missing body', function(){
+      it('should return a 400 error', function(){
+        return request
+          .post('/api/user')
+          .expect(400);
+      });
+    });
+
+    describe('with missing password', function() {
+      it('should return a 400 error for missing password', function(){
+        return request
+          .post('/api/user')
+          .send(missingPassUser)
+          .expect(400);
+      });
+    });
+
+    describe('with missing username', function() {
+      it('should return a 400 error for missing password', function(){
+        return request
+          .post('/api/user')
+          .send(missingUserUser)
+          .expect(400);
       });
     });
   });
