@@ -28,14 +28,14 @@ describe('user routes', function(){
       return helper.kill();
     });
     describe('valid request', function(){
-      it('should succeed', function(){
+      it('should succeed algorithm and type for jwt in the response', function(){
         return request
           .post('/api/user')
           .send(exampleUser)
           .expect(200)
           .expect(res => {
             debug(res.text);
-            expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
+            expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');//this is algorithm and type for jwt
           });
       });
     });
@@ -61,6 +61,15 @@ describe('user routes', function(){
         return request
           .post('/api/user')
           .send(missingUserUser)
+          .expect(400);
+      });
+    });
+
+    describe('with invalid body', function(){
+      it('should return a 400 error', function(){
+        return request
+          .post('/api/user')
+          .send('totally not JSON at all bro!')
           .expect(400);
       });
     });
