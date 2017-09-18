@@ -30,4 +30,13 @@ userSchema.methods.generatePasswordHash = function (password){
   });
 };
 
-module.exports = mongoose.models.user || mongoose.model('user', userSchema);
+const User = module.exports = mongoose.models.user || mongoose.model('user', userSchema);
+
+User.createUser = function(body) {
+  debug('createUser', body);
+
+  const { password, ..._user } = body;
+  return new User(_user)
+    .generatePasswordHash(password)
+    .then(user => user.save());
+};
