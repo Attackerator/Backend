@@ -19,5 +19,5 @@ const Character = module.exports = mongoose.models.character || mongoose.model('
 
 Character.createCharacter = function(character){
   debug(character);
-  return new Character(character);
+  return new Character(character).save();
 };

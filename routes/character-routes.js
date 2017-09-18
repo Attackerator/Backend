@@ -20,7 +20,6 @@ router.post('/api/character',jsonParser,(req,res,next) => {
   createCharacter({
     ...req.body
   })
-    .save()
     .then(character => res.json(character))
     .catch(next);
 });
