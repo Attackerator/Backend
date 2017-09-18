@@ -17,7 +17,7 @@ const characterSchema = {
 
 const Character = module.exports = mongoose.models.character || mongoose.model('Character',characterSchema);
 
-Character.statics.createCharacter = function(character){
+Character.createCharacter = function(character){
   debug(character);
   return new Character(...character).save();
 };
