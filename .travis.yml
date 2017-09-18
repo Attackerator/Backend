@@ -5,6 +5,7 @@
     - mongodb
   env:
     - MONGODB_URI=mongodb://localhost/test
+    - APP_SECRET=NotSoSecret
   before_script: npm install
   script:
     - npm test
