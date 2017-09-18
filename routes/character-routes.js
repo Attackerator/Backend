@@ -11,14 +11,11 @@ const router = module.exports = new Router();
 
 router.post('/api/character',jsonParser,(req,res,next) => {
   debug(`POST /api/character`);
-/*
+
   createCharacter({
-    ...req.body,
-    user: req.user._id
+    ...req.body
   })
     .save()
     .then(character => res.json(character))
     .catch(next);
-
-    */
 });

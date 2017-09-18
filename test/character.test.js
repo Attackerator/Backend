@@ -2,6 +2,7 @@
 
 const app = require('../server');
 const request = require('supertest')(app);
+const { expect } = require('chai');
 const debug = require('debug')('app:test/character');
 require('../lib/mongoose-connect');
 
@@ -21,9 +22,7 @@ describe('Character Routes',function(){
       });
     });
     afterEach(function(){
-      return Promise.all([
-        User.remove({})
-      ]);
+      return User.remove({});
     });
     it('should return 200 if it saves a new character',function(){
       return request.post(`/api/character`)
