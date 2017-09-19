@@ -5,7 +5,6 @@ const { Schema } = require('mongoose');
 const debug = require('debug')('app:model/spells');
 
 const saveSchema = Schema ({
-  name: { type: String, required: true },
   type: { type: String, required: true },
   stat: { type: String, required: true },
   bonus: { type: Number },

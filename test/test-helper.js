@@ -4,7 +4,11 @@ const User = require('../model/user');
 const Stats = require('../model/stats');
 const Character = require('../model/character');
 const Spell = require('../model/spells');
+<<<<<<< HEAD
 const Skill = require('../model/skills');
+=======
+const Save = require('../model/save');
+>>>>>>> created save POST route
 
 const exampleSpell = {
   name: 'Donkey Fart',
@@ -51,7 +55,11 @@ const deleteCharacter = function(){
     Stats.remove({}),
     Spell.remove({}),
     Character.remove({}),
+<<<<<<< HEAD
     Skill.remove({})
+=======
+    Save.remove({}),
+>>>>>>> created save POST route
   ]);
 };
 
