@@ -9,13 +9,17 @@ const saveSchema = Schema ({
   type: { type: String, required: true },
   stat: { type: String, required: true },
   bonus: { type: Number },
-  characterId: { type: Schema.Types.ObjectId },
-  userId: { type: Schema.Types.ObjectId },
+  characterId: { type: Schema.Types.ObjectId, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
 });
 
 const Save = module.exports = mongoose.models.save || mongoose.model('save',saveSchema);
 
-Save.createSpell = function(save){
-  debug(save);
-  return new Save(save).save();
+Save.createSpell = function(body, characterId, userId){
+  debug(body);
+  return new Save({
+    ...body,
+    characterId,
+    userId,
+  }).save();
 };

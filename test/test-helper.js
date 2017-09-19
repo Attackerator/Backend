@@ -16,7 +16,11 @@ const exampleSpell = {
   diceCount: '5',
   description: 'Fills a sixty foot area of effect centered on caster. Everything in effected area rolls fortitude check. Half damage on miss.',
 };
-
+const exampleSave = {
+  type: 'fortitude',
+  stat: 'constitution',
+  bonus: 5,
+};
 const exampleBody = {
   username: 'MrDonkey1028'
   ,email: 'donkey@example.com'
@@ -52,6 +56,7 @@ const deleteCharacter = function(){
 };
 
 module.exports = {
+  save: exampleSave,
   spell: exampleSpell,
   user: exampleBody,
   stats: exampleStats,

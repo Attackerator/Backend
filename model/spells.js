@@ -13,13 +13,17 @@ const spellSchema = Schema ({
   diceType: { type: Number, required: true },
   diceCount: { type: Number, required: true },
   description: { type: String },
-  characterId: { type: Schema.Types.ObjectId },
-  userId: { type: Schema.Types.ObjectId },
+  characterId: { type: Schema.Types.ObjectId, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
 });
 
 const Spell = module.exports = mongoose.models.spell || mongoose.model('spell',spellSchema);
 
-Spell.createSpell = function(spell){
-  debug(spell);
-  return new Spell(spell).save();
+Spell.createSpell = function(body, characterId, userId){
+  debug(body);
+  return new Spell({
+    ...body,
+    characterId,
+    userId,
+  }).save();
 };
