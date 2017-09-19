@@ -4,6 +4,7 @@ const User = require('../model/user');
 const Stats = require('../model/stats');
 const Character = require('../model/character');
 const Spell = require('../model/spells');
+const Skill = require('../model/skills');
 
 const exampleSpell = {
   name: 'Donkey Fart',
@@ -56,5 +57,5 @@ module.exports = {
   stats: exampleStats,
   character: exampleCharacter,
   kill: deleteCharacter,
-  skill: testSkill,
+  skill: exampleSkill,
 };
