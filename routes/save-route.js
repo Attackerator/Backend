@@ -17,7 +17,7 @@ router.post('/api/:characterId/save',jsonParser,(req,res,next) => {
       return this.character;
     })
     .then(character => {
-      Save.createSave(req.body,req.user._id,character._id)
+      Save.createSave(req.body,req.userId._id,req.characterId._id)
         .then(save => {
           character.saves.push(save._id);
           this.save = save;

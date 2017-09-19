@@ -17,7 +17,7 @@ router.post('/api/:characterId/spell',jsonParser,(req,res,next) => {
       return this.character;
     })
     .then(character => {
-      Spell.createSpell(req.body,req.user._id,character._id)
+      Spell.createSpell(req.body,req.userId._id,req.characterId._id)
         .then(spell => {
           character.spells.push(spell._id);
           this.spell = spell;
