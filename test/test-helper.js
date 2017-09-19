@@ -3,7 +3,6 @@
 const User = require('../model/user');
 const Stats = require('../model/stats');
 const Character = require('../model/character');
-const debug = require('debug')('app:test-helper');
 const Spell = require('../model/spells');
 
 const exampleSpell = {

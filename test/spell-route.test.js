@@ -9,9 +9,7 @@ const helper = require('./test-helper');
 
 
 describe('Spell Routes',function(){
-  beforeEach(function(){
-    return helper.spell;
-  });
+
   afterEach(function(){
     return helper.kill;
   });
