@@ -12,15 +12,11 @@ const characterSchema = {
   spells: [{ type: Schema.Types.ObjectId }],
   attack: [{ type: Schema.Types.ObjectId }],
   sayings: [{ type: Schema.Types.ObjectId }],
-  userId: { type: Schema.Types.ObjectId, required: true }
 };
 
 const Character = module.exports = mongoose.models.character || mongoose.model('character',characterSchema);
 
-Character.createCharacter = function(character,userId){
+Character.createCharacter = function(character){
   debug(character);
-  return new Character({
-    ...character,
-    userId
-  }).save();
+  return new Character(character).save();
 };
