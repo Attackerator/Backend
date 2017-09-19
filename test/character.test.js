@@ -25,7 +25,6 @@ describe('Character Routes',function(){
       return User.remove({});
     });
     it('should return 200 if it saves a new character',function(){
-      exampleCharacter.user = this.testUser._id;
       return request.post(`/api/character`)
         .send(exampleCharacter)
         .set({'Authorization': `Bearer ${this.testToken}`})
