@@ -13,7 +13,7 @@ const exampleCharacter = {
   name: 'dustinyschild'
 };
 
-describe.only('Character Routes',function(){
+describe('Character Routes',function(){
   describe('POST /api/character',function(){
     beforeEach(function(){
       return User.createUser(helper.user)
@@ -34,7 +34,7 @@ describe.only('Character Routes',function(){
           expect(res.body.name).to.equal('dustinyschild');
         });
     });
-    xit('should return 401 if no body is provided',function(){
+    it('should return 401 if no body is provided',function(){
       return request.post('/api/character')
         .send()
         .set({'Authorization': `Bearer ${this.testToken}`})
