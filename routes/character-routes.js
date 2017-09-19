@@ -11,9 +11,7 @@ const router = module.exports = new Router();
 router.post('/api/character',jsonParser,(req,res,next) => {
   debug(`POST /api/character`);
   req.body.userId = req.user._id;
-  createCharacter({
-    ...req.body
-  })
+  createCharacter(req.body,req.user._id)
     .then(character => res.json(character))
     .catch(next);
 });

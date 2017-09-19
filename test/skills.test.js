@@ -25,6 +25,7 @@ describe('Skills',function(){
     return createCharacter(helper.character,this.testUser._id)
       .then(character => {
         this.testCharacter = character;
+        debug(character);
       });
   });
   afterEach(function(){
