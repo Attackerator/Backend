@@ -16,6 +16,7 @@ app.use(require('./routes/stats-route'));
 app.use(require('./routes/character-routes'));
 app.use(require('./routes/user-routes'));
 app.use(require('./routes/attack-routes'));
+app.use(require('./routes/spell-route'));
 
 app.use(require('./lib/error-middleware.js'));
 
