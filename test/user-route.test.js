@@ -24,14 +24,14 @@ const missingUserUser = {
 };
 
 describe('user routes', function(){
-  var nUser;
-  beforeEach(function() {
-    return User.createUser(exampleUser).then(user => nUser = user);
-  });
   afterEach(function(){
     return helper.kill();
   });
-  describe.only('GET /api/signin', function(){
+  describe('GET /api/signin', function(){
+    var nUser;
+    beforeEach(function() {
+      return User.createUser(exampleUser).then(user => nUser = user);
+    });
     it('should return JWT when you sign in', function (){
       debug(nUser);
       return request
@@ -45,9 +45,6 @@ describe('user routes', function(){
     });
   });
   describe('POST /api/user', function(){
-    afterEach(function(){
-      return helper.kill();
-    });
     describe('valid request', function(){
       it('should succeed algorithm and type for jwt in the response', function(){
         return request
