@@ -8,6 +8,7 @@ const Spell = require('../model/spells');
 
 const exampleSpell = {
   name: 'Donkey Fart',
+  stat: 'wisdom',
   toHitBonus: 4,
   damageBonus: 7,
   damageType: 'necrotic',
@@ -15,38 +16,36 @@ const exampleSpell = {
   diceCount: '5',
   description: 'Fills a sixty foot area of effect centered on caster. Everything in effected area rolls fortitude check. Half damage on miss.',
 };
-const testSpell = Spell.createSpell(exampleSpell);
 
 const exampleBody = {
   username: 'MrDonkey1028'
   ,email: 'donkey@example.com'
   ,password: 'mule'
 };
-/*
 const exampleStats = {
-  strength:'',
-  dexterity:'',
-  constitution:'',
-  intelligence:'',
-  charisma:'',
-  wisdom:'',
+  strength:'8',
+  dexterity:'8',
+  constitution:'8',
+  intelligence:'8',
+  charisma:'8',
+  wisdom:'8',
 };
-*/
 const exampleCharacter ={
   name: 'SuperDonkey',
+  user: 'deadbeefdeadbeefdeadbeef',
 };
 
 const testUser = User.createUser(exampleBody).then(user => user.generateFindHash());
 debug('testUser');
-//const testStats = Stats.createStats(exampleStats);
-//debug('testStats');
+const testStats = Stats.createStats(exampleStats);
+debug('testStats');
 const testCharacter = Character.createCharacter(exampleCharacter);
 debug('testCharacter');
+const testSpell = Spell.createSpell(exampleSpell);
 
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
-    //Stats.remove({}),
     Stats.remove({}),
     Spell.remove({}),
     Character.remove({}),
@@ -56,7 +55,7 @@ const deleteCharacter = function(){
 module.exports = {
   spell: testSpell,
   user: testUser,
-  //stats: testStats,
+  stats: testStats,
   character: testCharacter,
   kill: deleteCharacter,
 };
