@@ -9,8 +9,8 @@ const Spell = require('../model/spells');
 
 const router = module.exports = new Router();
 
-router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
-  debug(`/api/spell/${req.params.characterId}`);
+router.post('/api/:characterId/spell',jsonParser,(req,res,next) => {
+  debug(`/api/${req.params.characterId}/spell`);
   Character.findById(req.params.characterId)
     .then(character => {
       this.character = character;

@@ -7,6 +7,7 @@ const debug = require('debug')('app:test/spell');
 require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
+const Character = require('../model/character.js');
 
 describe('Spell Routes',function(){
   beforeEach(function () {
@@ -15,12 +16,18 @@ describe('Spell Routes',function(){
       .then(user => user.generateToken())
       .then(token => this.testToken = token);
   });
+  beforeEach(function () {
+    Character.createCharacter(helper.character)
+      .then(character => {
+        this.character = character;
+      });
+  });
   afterEach(function(){
     return helper.kill();
   });
   describe('POST /api/spell',function(){
     it('should return 200 if it saves a new spell',function(){
-      return request.post(`/api/spell`)
+      return request.post(`/api/${this.character._id}/spell`)
         .send(helper.spell)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(200)
@@ -31,7 +38,7 @@ describe('Spell Routes',function(){
         });
     });
     it('should return 400 if no body is provided',function(){
-      return request.post('/api/spell')
+      return request.post(`/api/${this.character._id}/spell`)
         .send()
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);

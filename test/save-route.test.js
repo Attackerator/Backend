@@ -7,6 +7,7 @@ const debug = require('debug')('app:test/save');
 require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
+const Character = require('../model/character.js');
 
 describe('Save Routes',function(){
   beforeEach(function () {
@@ -15,12 +16,19 @@ describe('Save Routes',function(){
       .then(user => user.generateToken())
       .then(token => this.testToken = token);
   });
+  beforeEach(function () {
+    Character.createCharacter(helper.character)
+      .then(character => {
+        this.character = character;
+        return this.character;
+      });
+  });
   afterEach(function(){
     return helper.kill();
   });
   describe('POST /api/save',function(){
     it('should return 200 if it saves a new save',function(){
-      return request.post(`/api/save`)
+      return request.post(`/api/${this.character._id}/save`)
         .send(helper.save)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(200)
@@ -31,7 +39,7 @@ describe('Save Routes',function(){
         });
     });
     it('should return 400 if no body is provided',function(){
-      return request.post('/api/save')
+      return request.post(`/api/${this.character._id}/save`)
         .send()
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);

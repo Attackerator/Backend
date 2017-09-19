@@ -40,7 +40,7 @@ const exampleStats = {
 };
 const exampleCharacter ={
   name: 'SuperDonkey',
-  user: 'deadbeefdeadbeefdeadbeef',
+  userId: 'deadbeefdeadbeefdeadbeef',
 };
 
 const exampleSkill = {

@@ -9,7 +9,7 @@ const Save = require('../model/save');
 
 const router = module.exports = new Router();
 
-router.post('/api/save/:characterId',jsonParser,(req,res,next) => {
+router.post('/api/:characterId/save',jsonParser,(req,res,next) => {
   debug(`/api/save/${req.params.characterId}`);
   Character.findById(req.params.characterId)
     .then(character => {
