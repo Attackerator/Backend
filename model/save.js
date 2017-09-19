@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
-const debug = require('debug')('app:model/spells');
+const debug = require('debug')('app:model/save');
 
 const saveSchema = Schema ({
   type: { type: String, required: true },
@@ -14,11 +14,9 @@ const saveSchema = Schema ({
 
 const Save = module.exports = mongoose.models.save || mongoose.model('save',saveSchema);
 
-Save.createSpell = function(body, characterId, userId){
+Save.createSave = function(body){
   debug(body);
   return new Save({
     ...body,
-    characterId,
-    userId,
   }).save();
 };

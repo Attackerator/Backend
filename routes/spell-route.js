@@ -13,15 +13,12 @@ router.post('/api/:characterId/spell',jsonParser,(req,res,next) => {
   debug(`/api/${req.params.characterId}/spell`);
   Character.findById(req.params.characterId)
     .then(character => {
-      this.character = character;
-      return this.character;
-    })
-    .then(character => {
-      Spell.createSpell(req.body,req.userId._id,req.characterId._id)
+      req.body.characterId = character._id;
+      req.body.userId = req.user._id;
+      return Spell.createSpell(req.body)
         .then(spell => {
           character.spells.push(spell._id);
-          this.spell = spell;
-          res.json(this);
+          res.json(spell);
         });
     })
     .catch(next);

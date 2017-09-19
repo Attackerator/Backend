@@ -17,9 +17,10 @@ describe('Save Routes',function(){
       .then(token => this.testToken = token);
   });
   beforeEach(function () {
-    Character.createCharacter(helper.character)
+    return Character.createCharacter(helper.character)
       .then(character => {
         this.character = character;
+        debug(this.character._id);
         return this.character;
       });
   });
@@ -28,19 +29,20 @@ describe('Save Routes',function(){
   });
   describe('POST /api/save',function(){
     it('should return 200 if it saves a new save',function(){
-      return request.post(`/api/${this.character._id}/save`)
-        .send(helper.save)
+      debug(this.character._id);
+      debug(helper.save);
+      return request.post(`/api/save/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
+        .send(helper.save)
         .expect(200)
         .expect(res => {
-          debug(res.body.name);
-          expect(res.body.name).to.equal('Donkey Fart');
-          expect(res.body.description).to.not.be.null;
+          debug(res.body.type);
+          expect(res.body.type).to.equal('fortitude');
+          expect(res.body.stat).to.equal('constitution');
         });
     });
     it('should return 400 if no body is provided',function(){
-      return request.post(`/api/${this.character._id}/save`)
-        .send()
+      return request.post(`/api/save/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
     });

@@ -9,19 +9,18 @@ const Save = require('../model/save');
 
 const router = module.exports = new Router();
 
-router.post('/api/:characterId/save',jsonParser,(req,res,next) => {
+router.post('/api/save/:characterId',jsonParser,(req,res,next) => {
   debug(`/api/save/${req.params.characterId}`);
+  debug(req.body);
+
   Character.findById(req.params.characterId)
     .then(character => {
-      this.character = character;
-      return this.character;
-    })
-    .then(character => {
-      Save.createSave(req.body,req.userId._id,req.characterId._id)
+      req.body.characterId = character._id;
+      req.body.userId = req.user._id;
+      return Save.createSave(req.body)
         .then(save => {
           character.saves.push(save._id);
-          this.save = save;
-          res.json(this);
+          res.json(save);
         });
     })
     .catch(next);

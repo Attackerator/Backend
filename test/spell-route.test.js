@@ -17,9 +17,11 @@ describe('Spell Routes',function(){
       .then(token => this.testToken = token);
   });
   beforeEach(function () {
-    Character.createCharacter(helper.character)
+    return Character.createCharacter(helper.character)
       .then(character => {
         this.character = character;
+        debug(this.character._id);
+        return this.character;
       });
   });
   afterEach(function(){

@@ -19,11 +19,9 @@ const spellSchema = Schema ({
 
 const Spell = module.exports = mongoose.models.spell || mongoose.model('spell',spellSchema);
 
-Spell.createSpell = function(body, characterId, userId){
+Spell.createSpell = function(body){
   debug(body);
   return new Spell({
     ...body,
-    characterId,
-    userId,
   }).save();
 };
