@@ -40,5 +40,6 @@ describe('Character Routes',function(){
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
     });
+    //TODO: add validation checks for Auth headers
   });
 });
