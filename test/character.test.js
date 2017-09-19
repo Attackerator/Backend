@@ -18,7 +18,7 @@ var newUser;
 describe('Character Routes',function(){
   describe('POST /api/character',function(){
     beforeEach(function(){
-      return helper.user
+      return User.createUser(helper.user)
         .then(user => {
           newUser = user;
           exampleCharacter.user = newUser._id;
