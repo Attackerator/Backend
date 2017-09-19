@@ -6,17 +6,26 @@ const { expect } = require('chai');
 
 require('../lib/mongoose-connect');
 
-const Attack = require('../model/attack');
+const helper = require('./test-helper');
+const User = require('../model/user.js');
 
 describe('attack routes', function() {
   describe('POST /api/attack', function() {
-    after(function () {
-      return Attack.remove({});
+    beforeEach(function () {
+      return User.createUser(helper.user)
+        .then(user => this.testUser = user)
+        .then(user => user.generateToken())
+        .then(token => this.testToken = token);
+    });
+
+    afterEach(function () {
+      return helper.kill();
     });
 
     it('should return an attack with ', function () {
       return request
         .post('/api/attack')
+        .set({'Authorization': `Bearer ${this.testToken}`})
         .send({
           name: 'test',
           stat: 'strength',
@@ -43,6 +52,7 @@ describe('attack routes', function() {
     it('should return 400 with invalid body', function () {
       return request
         .post('/api/attack')
+        .set({'Authorization': `Bearer ${this.testToken}`})
         .send()
         .expect(400);
     });
