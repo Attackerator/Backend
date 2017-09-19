@@ -30,6 +30,13 @@ describe('attack routes', function() {
         .expect(200)
         .expect(res => {
           expect(res.body.name).to.equal('test');
+          expect(res.body.stat).to.equal('strength');
+          expect(res.body.damageType).to.equal('blunt');
+          expect(res.body.diceType).to.equal(3);
+          expect(res.body.diceCount).to.equal(3);
+          expect(res.body.description).to.equal('does a thing');
+          expect(res.body.toHitBonus).to.equal(2);
+          expect(res.body.damageBonus).to.equal(2);
         });
     });
 
