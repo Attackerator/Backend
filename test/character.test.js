@@ -13,24 +13,22 @@ const exampleCharacter = {
   name: 'dustinyschild'
 };
 
-var newUser;
-
 describe('Character Routes',function(){
   describe('POST /api/character',function(){
     beforeEach(function(){
       return User.createUser(helper.user)
-        .then(user => {
-          newUser = user;
-          exampleCharacter.user = newUser._id;
-          debug(newUser);
-        });
+        .then(user => this.testUser = user)
+        .then(user => user.generateToken())
+        .then(token => this.testToken = token);
     });
     afterEach(function(){
       return User.remove({});
     });
     it('should return 200 if it saves a new character',function(){
+      exampleCharacter.user = this.testUser._id;
       return request.post(`/api/character`)
         .send(exampleCharacter)
+        .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(200)
         .expect(res => {
           debug(res.body.name);
@@ -40,6 +38,7 @@ describe('Character Routes',function(){
     it('should return 401 if no body is provided',function(){
       return request.post('/api/character')
         .send()
+        .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
     });
   });
