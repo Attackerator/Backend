@@ -13,6 +13,8 @@ const spellSchema = Schema ({
   diceType: { type: Number, required: true },
   diceCount: { type: Number, required: true },
   description: { type: String },
+  characterId: { type: Schema.Types.ObjectId },
+  userId: { type: Schema.Types.ObjectId },
 });
 
 const Spell = module.exports = mongoose.models.spell || mongoose.model('spell',spellSchema);
