@@ -4,6 +4,7 @@ const app = require('../server');
 const request = require('supertest')(app);
 const debug = require('debug')('app:test/user-route');
 
+const User = require('../model/user');
 const helper = require('../test/test-helper');
 require('../lib/mongoose-connect');
 const { expect } = require('chai');
@@ -23,10 +24,27 @@ const missingUserUser = {
 };
 
 describe('user routes', function(){
-  describe('POST /api/user', function(){
-    afterEach(function(){
-      return helper.kill();
+  afterEach(function(){
+    return helper.kill();
+  });
+  describe('GET /api/signin', function(){
+    var nUser;
+    beforeEach(function() {
+      return User.createUser(exampleUser).then(user => nUser = user);
     });
+    it('should return JWT when you sign in', function (){
+      debug(nUser);
+      return request
+        .get('/api/signin')
+        .auth(exampleUser.username, exampleUser.password)
+        .expect(200)
+        .expect(res => {
+          debug(res.text);
+          expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');//this is algorithm and type for jwt
+        });
+    });
+  });
+  describe('POST /api/user', function(){
     describe('valid request', function(){
       it('should succeed algorithm and type for jwt in the response', function(){
         return request
