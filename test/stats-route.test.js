@@ -19,6 +19,12 @@ describe('stats routes', function() {
           .then(user => user.generateToken())
           .then(token => this.testToken = token);
       });
+      beforeEach(function () {
+        return Character.createCharacter(helper.character)
+          .then(character => {
+            this.testCharacter = character;
+          });
+      });
       afterEach(function () {
         return helper.kill();
       });

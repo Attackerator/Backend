@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 
 const helper = require('./test-helper');
 const User = require('../model/user.js');
+const Character = require('../model/character.js');
 
 describe('attack routes', function() {
   describe('POST /api/attack', function() {
@@ -16,6 +17,13 @@ describe('attack routes', function() {
         .then(user => this.testUser = user)
         .then(user => user.generateToken())
         .then(token => this.testToken = token);
+    });
+
+    beforeEach(function () {
+      return Character.createCharacter(helper.character)
+        .then(character => {
+          this.testCharacter = character;
+        });
     });
 
     afterEach(function () {

@@ -19,7 +19,12 @@ const attackSchema = Schema({
 
 const Attack = module.exports = mongoose.models.attack || mongoose.model('attack', attackSchema);
 
-Attack.createAttack = function(body) {
-  debug('createAttack', body);
-  return new Attack(body).save();
+Attack.createAttack = function(body, userId, characterId) {
+  debug('createAttack', body, userId, characterId);
+  return new Attack(
+    ...body,
+    userId,
+    characterId
+  )
+    .save();
 };
