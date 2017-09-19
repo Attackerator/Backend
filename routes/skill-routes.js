@@ -13,7 +13,7 @@ router.post('/api/:characterId/skill',jsonParser,(req,res,next) => {
 
   Character.findById(req.params.characterId)
     .then(character => {
-      Skill.createSkill(req.body,req.user._id,character._id)
+      return Skill.createSkill(req.body,req.user._id,character._id)
         .then(skill => {
           debug(skill);
           character.skills.push(skill._id);
@@ -21,4 +21,8 @@ router.post('/api/:characterId/skill',jsonParser,(req,res,next) => {
         });
     })
     .catch(next);
+});
+
+router.get('/api/:characterId',function(){
+  
 });

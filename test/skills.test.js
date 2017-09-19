@@ -51,7 +51,30 @@ describe('Skills',function(){
           .expect(saved => {
             expect(saved.body.name).to.equal('underwater basket weaving');
             expect(saved.body.bonus).to.deep.equal(3);
-            expect(saved.body.stat).to.deep.equal('dexterity');
+            expect(saved.body.stat).to.equal('dexterity');
+          });
+      });
+    });
+    describe('GET /api/:characterid',function(){
+      beforeEach(function(){
+        createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
+          .then(skill => this.testSkill = skill);
+      });
+      afterEach(function(){
+        delete this.testSkill;
+
+        return helper.kill();
+      });
+      it('should return a skill for character',function(){
+        return request.post(`/api/${this.testCharacter._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.name).to.equal('underwater basket weaving');
+            expect(res.body.bonus).to.deep.equal(3);
+            expect(res.body.stat).to.equal('dexterity');
+            expect(res.body.userId).to.equal(this.testUser._id);
+            expect(res.body.characterId).to.equal(this.testCharacter._id);
           });
       });
     });
