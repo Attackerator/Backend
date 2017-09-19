@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const debug = require('debug')('app:model/stats');
+const debug = require('debug')('app:model/attack');
 
 const attackSchema = Schema({
   name: { type: String, required: true },
