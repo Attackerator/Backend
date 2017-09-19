@@ -29,6 +29,18 @@ describe('user routes', function(){
   afterEach(function(){
     return helper.kill();
   });
+  describe('GET /api/signin', function(){
+    it('should return JWT when you sign in', function (){
+      return request
+        .get('/api/signin')
+        .auth(exampleUser.username, exampleUser.password)
+        .expect(200)
+        .expect(res => {
+          debug(res.text);
+          expect(res.text.substring(0, 36)).to.equal('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');//this is algorithm and type for jwt
+        });
+    });
+  });
   describe('POST /api/user', function(){
     afterEach(function(){
       return helper.kill();
