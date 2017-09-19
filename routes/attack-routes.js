@@ -11,6 +11,6 @@ const router = module.exports = new Router();
 router.post('/api/attack', jsonParser, function (req, res, next) {
   debug('POST /api/attack');
   Attack.createAttack(req.body)
-  .then(attack => res.json(attack))
-  .catch(next);
+    .then(attack => res.json(attack))
+    .catch(next);
 });
