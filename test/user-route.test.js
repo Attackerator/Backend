@@ -4,6 +4,7 @@ const app = require('../server');
 const request = require('supertest')(app);
 const debug = require('debug')('app:test/user-route');
 
+const User = require('../model/user');
 const helper = require('../test/test-helper');
 require('../lib/mongoose-connect');
 const { expect } = require('chai');
@@ -23,14 +24,16 @@ const missingUserUser = {
 };
 
 describe('user routes', function(){
+  var nUser;
   beforeEach(function() {
-    return helper.user;
+    return User.createUser(exampleUser).then(user => nUser = user);
   });
   afterEach(function(){
     return helper.kill();
   });
-  describe('GET /api/signin', function(){
+  describe.only('GET /api/signin', function(){
     it('should return JWT when you sign in', function (){
+      debug(nUser);
       return request
         .get('/api/signin')
         .auth(exampleUser.username, exampleUser.password)
