@@ -15,7 +15,7 @@ app.use(cors());
 app.use(require('./routes/user-routes'));
 
 // Authentication, sets req.user
-app.use('/api/gallery*', require('./lib/bearer-auth-middleware'));
+app.use('/api/*', require('./lib/bearer-auth-middleware'));
 
 app.use(require('./routes/stats-route'));
 app.use(require('./routes/character-routes'));
