@@ -23,6 +23,12 @@ const missingUserUser = {
 };
 
 describe('user routes', function(){
+  beforeEach(function() {
+    return helper.user;
+  });
+  afterEach(function(){
+    return helper.kill();
+  });
   describe('POST /api/user', function(){
     afterEach(function(){
       return helper.kill();
