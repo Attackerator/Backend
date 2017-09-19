@@ -6,7 +6,8 @@ const { expect } = require('chai');
 
 require('../lib/mongoose-connect');
 const helper = require('./test-helper');
-const User = require('../model/user.js');
+const User = require('../model/user');
+const Character = require('../model/character');
 
 
 
@@ -33,7 +34,7 @@ describe('stats routes', function() {
         return request
           .post('/api/stats')
           .set({'Authorization': `Bearer ${this.testToken}`})
-          .send({ strength: 3})
+          .send({ strength: 3}, this.testUser, this.testCharacter)
           .expect(200)
           .expect(res => {
             expect(res.body.strength).to.equal(3);

@@ -20,7 +20,7 @@ describe('attack routes', function() {
     });
 
     beforeEach(function () {
-      return Character.createCharacter(helper.character)
+      return Character.createCharacter(helper.character, this.testUser._id)
         .then(character => {
           this.testCharacter = character;
         });
@@ -43,7 +43,7 @@ describe('attack routes', function() {
           description: 'does a thing',
           toHitBonus: 2,
           damageBonus: 2
-        })
+        }, this.testUser._id, this.testCharacter._id)
         .expect(200)
         .expect(res => {
           expect(res.body.name).to.equal('test');
