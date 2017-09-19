@@ -13,6 +13,8 @@ const attackSchema = Schema({
   description: { type: String, required: false },
   toHitBonus: { type: Number, required: false },
   damageBonus: { type: Number, required: false },
+  characterId: { type: Schema.Types.ObjectId, required: true},
+  userId: { type: Schema.Types.ObjectId, required: true}
 });
 
 const Attack = module.exports = mongoose.models.attack || mongoose.model('attack', attackSchema);
