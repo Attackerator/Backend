@@ -35,14 +35,6 @@ const exampleCharacter ={
   user: 'deadbeefdeadbeefdeadbeef',
 };
 
-const testUser = User.createUser(exampleBody).then(user => user.generateFindHash());
-debug('testUser');
-const testStats = Stats.createStats(exampleStats);
-debug('testStats');
-const testCharacter = Character.createCharacter(exampleCharacter);
-debug('testCharacter');
-const testSpell = Spell.createSpell(exampleSpell);
-
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
@@ -53,9 +45,9 @@ const deleteCharacter = function(){
 };
 
 module.exports = {
-  spell: testSpell,
-  user: testUser,
-  stats: testStats,
-  character: testCharacter,
+  spell: exampleSpell,
+  user: exampleBody,
+  stats: exampleStats,
+  character: exampleCharacter,
   kill: deleteCharacter,
 };

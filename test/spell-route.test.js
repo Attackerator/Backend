@@ -10,7 +10,7 @@ const helper = require('./test-helper');
 
 describe('Spell Routes',function(){
   beforeEach(function(){
-    return helper;
+    return helper.spell;
   });
   afterEach(function(){
     return helper.kill;
@@ -26,7 +26,7 @@ describe('Spell Routes',function(){
           expect(res.body.description).to.not.be.null;
         });
     });
-    it('should return 401 if no body is provided',function(){
+    it('should return 400 if no body is provided',function(){
       return request.post('/api/spell')
         .send()
         .expect(400);
