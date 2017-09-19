@@ -4,6 +4,7 @@ const User = require('../model/user');
 const Stats = require('../model/stats');
 const Character = require('../model/character');
 const Spell = require('../model/spells');
+const Skill = require('../model/skills');
 
 const exampleSpell = {
   name: 'Donkey Fart',
@@ -34,12 +35,19 @@ const exampleCharacter ={
   user: 'deadbeefdeadbeefdeadbeef',
 };
 
+const exampleSkill = {
+  name: 'underwater basket weaving',
+  bonus: 3,
+  stat: 'dexterity'
+};
+
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
     Stats.remove({}),
     Spell.remove({}),
     Character.remove({}),
+    Skill.remove({})
   ]);
 };
 
@@ -49,4 +57,5 @@ module.exports = {
   stats: exampleStats,
   character: exampleCharacter,
   kill: deleteCharacter,
+  skill: exampleSkill,
 };
