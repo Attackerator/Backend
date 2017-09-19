@@ -34,12 +34,19 @@ const exampleCharacter ={
   user: 'deadbeefdeadbeefdeadbeef',
 };
 
+const exampleSkill = {
+  name: 'underwater basket weaving',
+  bonus: 3,
+  stat: 'dexterity'
+};
+
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
     Stats.remove({}),
     Spell.remove({}),
     Character.remove({}),
+    Skill.remove({})
   ]);
 };
 
@@ -49,4 +56,5 @@ module.exports = {
   stats: exampleStats,
   character: exampleCharacter,
   kill: deleteCharacter,
+  skill: testSkill,
 };
