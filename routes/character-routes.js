@@ -14,11 +14,11 @@ router.get('/api/character/:id', (req,res,next) =>{
   debug(`GET /api/character/${req.params.id}`);
 
   Character.findById(req.params.id)
-    //.populate('stats')
+    .populate('stats')
     .populate('skills')
     .populate('spells')
-    //.populate('saves')
-    //.populate('attacks')
+    .populate('saves')
+    .populate('attacks')
     .then(character => {
       debug(character);
       if (!character)

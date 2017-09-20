@@ -42,10 +42,7 @@ describe('Character Routes',function(){
     beforeEach(function(){
       return helper.addSkill(this.testCharacter.id,this.testUser._id);
     });
-    it('should return a character maybe probably?', function(){
-
-      //helper.addSpell(this.testCharacter.id,this.testUser._id);
-      ///helper.addSpell(this.testCharacter.id,this.testUser._id);
+    it('should return a character populated with skills, stats, etc.', function(){
       return request
         .get(`/api/character/${this.testCharacter.id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
