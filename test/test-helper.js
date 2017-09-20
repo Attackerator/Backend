@@ -62,10 +62,7 @@ const addSpell = function (characterId, userId){
       return Spell.createSpell(exampleSpell)
         .then(spell => {
           character.spells.push(spell._id);
-          return character.spells;
-        })
-        .then(spells => {
-          Character.findByIdAndUpdate(characterId,{ spells },{ runValidators: true});
+          character.save();
         });
     });
 };
