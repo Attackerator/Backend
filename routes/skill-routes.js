@@ -34,6 +34,7 @@ router.get('/api/skill/:skillId',function(req,res,next){
         debug(`permission denied for ${req.user._id} (owner: ${skill.userId})`);
         return next(createError(401, 'permission denied'));
       }
+      debug(skill);
       return res.json(skill);
     });
 });
@@ -43,13 +44,26 @@ router.put('/api/skill/:skillId',jsonParser,function(req,res,next){
   debug(req.body);
   return Skill.findByIdAndUpdate(req.params.skillId,req.body,{ new: true })
     .then(updatedSkill => {
-      debug('UPDATED SKILL',updatedSkill);
       if (updatedSkill.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${updatedSkill.userId})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       debug(updatedSkill);
       res.json(updatedSkill);
     })
     .catch(next);
+});
+
+router.delete(`/api/skill/:skillId`,function(req,res,next){
+  debug(`/api/skill/${req.params.skillId}`);
+
+  return Skill.findByIdAndRemove(req.params.skillId)
+    .then(skill => {
+      debug('deleted',skill);
+      res.json(skill);
+    })
+    .catch(result => {
+      next(createError(400, 'Delete failed'));
+      debug(result);
+    });
 });
