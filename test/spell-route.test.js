@@ -108,4 +108,30 @@ describe('Spell Routes',function(){
       });
     });
   });
+  describe.only('PUT /api/spell/:id',function(){
+    beforeEach(function(){
+      helper.spell.characterId = this.character._id;
+      helper.spell.userId = this.testUser._id;
+      return createSpell(helper.spell)
+        .then(spell => this.testSpell = spell);
+    });
+    afterEach(function() {
+      return helper.kill();
+    });
+    it('should return the updated spell',function(){
+      return request.put(`/api/spell/${this.testSpell._id}`)
+        .set({
+          'Authorization': `Bearer ${this.testToken}`,
+        })
+        .send({
+          name: 'updatedSpell',
+          stat: 'strength'
+        })
+        .expect(200)
+        .expect(res => {
+          expect(res.body.name).to.equal('updatedSpell');
+          expect(res.body.stat).to.equal('strength');
+        });
+    });
+  });
 });
