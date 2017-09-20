@@ -2,6 +2,7 @@
 
 const Router = require('express');
 const jsonParser = require('body-parser').json();
+const createError = require('http-errors');
 const debug = require('debug')('app:routes/stats-routes');
 
 const Stats = require('../model/stats');
@@ -24,6 +25,20 @@ router.post('/api/stats/:characterId', jsonParser, function (req, res, next) {
           character.save();
           res.json(stats);
         });
+    })
+    .catch(next);
+});
+
+router.get('/api/stats/:id', jsonParser, function(req, res, next) {
+  debug('GET /api/stats/:id');
+
+  Stats.findById(req.params.id)
+    .then(stats => {
+      if(stats.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${stats.userId})`);
+        return next(createError(401, 'permission denied'));
+      }
+      res.json(stats);
     })
     .catch(next);
 });
