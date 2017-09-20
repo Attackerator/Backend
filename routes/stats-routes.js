@@ -35,7 +35,7 @@ router.get('/api/stats/:id', jsonParser, function(req, res, next) {
   Stats.findById(req.params.id)
     .then(stats => {
       if(stats.userId.toString() !== req.user._id.toString()) {
-        debug(`permission denied for ${req.user._id} (ower: ${stats.userId})`);
+        debug(`permission denied for ${req.user._id} (owner: ${stats.userId})`);
         return next(createError(401, 'permission denied'));
       }
       res.json(stats);
