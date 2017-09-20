@@ -22,6 +22,7 @@ describe('stats routes', function() {
       });
 
       beforeEach(function () {
+        helper.character.userId = this.testUser._id;
         return Character.createCharacter(helper.character)
           .then(character => {
             this.testCharacter = character;
