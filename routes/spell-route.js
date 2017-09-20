@@ -53,3 +53,11 @@ router.put(`/api/spell/:id`,jsonParser,function(req,res,next){
     })
     .catch(next);
 });
+
+router.delete(`/api/spell/:id`,function(req,res,next){
+  debug(`/api/spell/${req.params.id}`);
+
+  Spell.findByIdAndRemove(req.params.id)
+    .then(spell => res.json(spell))
+    .catch(next);
+});

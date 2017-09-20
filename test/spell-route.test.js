@@ -108,7 +108,7 @@ describe('Spell Routes',function(){
       });
     });
   });
-  describe.only('PUT /api/spell/:id',function(){
+  describe('PUT /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
@@ -131,6 +131,25 @@ describe('Spell Routes',function(){
         .expect(res => {
           expect(res.body.name).to.equal('updatedSpell');
           expect(res.body.stat).to.equal('strength');
+        });
+    });
+  });
+  describe.only('DELETE /api/spell/:id',function(){
+    beforeEach(function(){
+      helper.spell.characterId = this.character._id;
+      helper.spell.userId = this.testUser._id;
+      return createSpell(helper.spell)
+        .then(spell => this.testSpell = spell);
+    });
+    afterEach(function() {
+      return helper.kill();
+    });
+    it('should return the deleted spell',function(){
+      return request.delete(`/api/spell/${this.testSpell._id}`)
+        .set({ Authorization: `Bearer ${this.testToken}`})
+        .expect(200)
+        .expect(res => {
+          expect(res.body._id).to.equal(this.testSpell._id.toString());
         });
     });
   });
