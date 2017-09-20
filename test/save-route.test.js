@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
+const { createSave } = require('../model/save');
 
 describe.only('Save Routes',function(){
   beforeEach(function () {
@@ -70,10 +71,12 @@ describe.only('Save Routes',function(){
     });
     describe('valid id', function () {
       beforeEach(function(){
-        return helper.addSave(this.testCharacter.id,this.testUser._id);
+        helper.save.characterId = this.character._id;
+        helper.save.userId = this.testUser._id;
+        return createSave(helper.save)
+          .then(save => this.testSave = save);
       });
       afterEach(function() {
-        delete this.testSkill;
         return helper.kill();
       });
       it('should return a save', function () {

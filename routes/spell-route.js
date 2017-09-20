@@ -26,12 +26,12 @@ router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
     .catch(next);
 });
 
-router.get('/api/save/:id', (req, res, next) => {
-  debug(`GET /api/save/${req.params.id}`);
+router.get('/api/spell/:id', (req, res, next) => {
+  debug(`GET /api/spell/${req.params.id}`);
 
   Spell.findById(req.params.id)
     .then(spell => {
-      if (spell.userID.toString() !== req.user._id.toString()) {
+      if (spell.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
         return next(createError(401, 'permission denied'));
       }

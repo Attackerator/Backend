@@ -33,7 +33,7 @@ router.get('/api/save/:id', (req, res, next) => {
 
   Save.findById(req.params.id)
     .then(save => {
-      if (save.userID.toString() !== req.user._id.toString()) {
+      if (save.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
         return next(createError(401, 'permission denied'));
       }
