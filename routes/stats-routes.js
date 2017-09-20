@@ -42,3 +42,11 @@ router.get('/api/stats/:id', jsonParser, function(req, res, next) {
     })
     .catch(next);
 });
+
+router.put('/api/stats/:id', function(req, res, next) {
+  debug('PUT /api/stats/:id');
+
+  Stats.findbyIdAndUpdate(req.params.id, req.body, { new: true})
+    .then(stats => res.json(stats))
+    .catch(next);
+});
