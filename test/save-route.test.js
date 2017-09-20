@@ -10,7 +10,7 @@ const User = require('../model/user.js');
 const Character = require('../model/character.js');
 const { createSave } = require('../model/save');
 
-describe('Save Routes',function(){
+describe.only('Save Routes',function(){
   beforeEach(function () {
     return User.createUser(helper.user)
       .then(user => this.testUser = user)
