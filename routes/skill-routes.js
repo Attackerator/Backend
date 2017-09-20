@@ -37,7 +37,6 @@ router.get('/api/skill/:skillId',function(req,res,next){
         debug(`permission denied for ${req.user._id} (owner: ${skill.userID})`);
         return next(createError(401, 'permission denied'));
       }
-      return skill;
-    })
-    .then(skill => res.json(skill));
+      return res.json(skill);
+    });
 });

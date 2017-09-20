@@ -22,6 +22,12 @@ describe('Skills',function(){
       .then(token => this.testToken = token);
   });
   beforeEach(function(){
+    return createUser(helper.hacker)
+      .then(hacker => this.hacker = hacker)
+      .then(hacker => hacker.generateToken())
+      .then(token => this.hackerToken = token);
+  });
+  beforeEach(function(){
     return Character.createCharacter(helper.character,this.testUser._id)
       .then(character => {
         this.testCharacter = character;
@@ -82,6 +88,11 @@ describe('Skills',function(){
             expect(res.body.userId.toString()).to.equal(this.testUser._id.toString());
             expect(res.body.characterId).to.equal(this.testCharacter._id.toString());
           });
+      });
+      it('should return 401 for invalid user',function(){
+        return request.get(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
       });
     });
   });
