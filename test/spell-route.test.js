@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
+const { createSpell } = require('../model/spells');
 
 describe('Spell Routes',function(){
   beforeEach(function () {
@@ -46,18 +47,64 @@ describe('Spell Routes',function(){
         .expect(400);
     });
   });
-  describe('Routes',function(){
-    describe('POST /api/spell',function(){
-      it('should return a saved spell',function(){
-        return request.post(`/api/spell/${this.character._id}`)
-          .set({Authorization: `Bearer ${this.testToken}`})
-          .send(helper.spell)
+  describe('GET /api/spell/:id', function () {
+    describe('invalid id', function () {
+      it('should return 404', function () {
+        return request
+          .get('/api/spell/missing')
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
+          .expect(404);
+      });
+    });
+    describe('missing id', function () {
+      it('should return 404', function () {
+        return request
+          .get('/api/spell/deadcodedeadcodedeadcode')
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
+          .expect(404);
+      });
+    });
+    describe('valid id', function () {
+      beforeEach(function(){
+        helper.spell.characterId = this.character._id;
+        helper.spell.userId = this.testUser._id;
+        return createSpell(helper.spell)
+          .then(spell => this.testSpell = spell);
+      });
+      afterEach(function() {
+        return helper.kill();
+      });
+      it('should return a spell', function () {
+        return request
+          .get(`/api/spell/${this.testSpell._id}`)
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
           .expect(200)
-          .expect(saved => {
-            expect(saved.body.name).to.equal('Donkey Fart');
-            expect(saved.body.damageBonus).to.deep.equal(7);
-            expect(saved.body.stat).to.equal('wisdom');
+          .expect(res => {
+            expect(res.body.name).to.equal(helper.spell.name);
+            expect(res.body).to.have.property('stat', helper.spell.stat);
           });
+      });
+      describe(`someone else's spell`, function () {
+        beforeEach(function () {
+          return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
+            .then(hacker => this.hacker = hacker)
+            .then(hacker => hacker.generateToken())
+            .then(hackerToken => this.hackerToken = hackerToken);
+        });
+        it('should return 401', function () {
+          return request
+            .get(`/api/spell/${this.testSpell._id}`)
+            .set({
+              Authorization: `Bearer ${this.hackerToken}`,
+            })
+            .expect(401);
+        });
       });
     });
   });
