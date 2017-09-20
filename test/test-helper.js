@@ -5,6 +5,7 @@ const Stats = require('../model/stats');
 const Character = require('../model/character');
 const Spell = require('../model/spells');
 const Skill = require('../model/skills');
+const Attack = require('../model/attack');
 const Save = require('../model/save');
 const debug = require('debug')('app:test/HELPER');
 
@@ -24,6 +25,18 @@ const exampleSpell = {
   diceCount: '5',
   description: 'Fills a sixty foot area of effect centered on caster. Everything in effected area rolls fortitude check. Half damage on miss.',
 };
+
+const exampleAttack = {
+  name: 'Donkey Kick',
+  stat: 'strength',
+  toHitBonus: 5,
+  damageBonus: 3,
+  damageType: 'bludgeoning',
+  diceType: '12',
+  diceCount: '2',
+  description: 'Achh, right in the fruit and veg',
+};
+
 const exampleSave = {
   type: 'fortitude',
   stat: 'constitution',
@@ -57,7 +70,9 @@ const addSkill = function(characterId, userId){
   Character.findById(characterId)
     .then(character => {
       debug(character);
-      return Skill.createSkill(exampleSkill,userId,characterId)
+      exampleSkill.characterId = characterId;
+      exampleSkill.userId = userId;
+      return Skill.createSkill(exampleSkill)
         .then(skill => {
           debug(skill);
           character.skills.push(skill._id);
@@ -76,6 +91,48 @@ const addSpell = function (characterId, userId){
       return Spell.createSpell(exampleSpell)
         .then(spell => {
           character.spells.push(spell._id);
+          character.save();
+        });
+    });
+};
+
+const addStat = function (characterId, userId){
+  return Character.findById(characterId)
+    .then(character => {
+      debug(character);
+      exampleStats.characterId = characterId;
+      exampleStats.userId = userId;
+      return Stats.createStats(exampleStats)
+        .then(stat => {
+          character.stats.push(stat._id);
+          character.save();
+        });
+    });
+};
+
+const addSave = function (characterId, userId){
+  return Character.findById(characterId)
+    .then(character => {
+      debug(character);
+      exampleSave.characterId = characterId;
+      exampleSave.userId = userId;
+      return Save.createSave(exampleSave)
+        .then(saves => {
+          character.saves.push(saves._id);
+          character.save();
+        });
+    });
+};
+
+const addAttack = function (characterId, userId){
+  return Character.findById(characterId)
+    .then(character => {
+      debug(character);
+      exampleAttack.characterId = characterId;
+      exampleAttack.userId = userId;
+      return Attack.CreateAttack(exampleAttack)
+        .then(attack => {
+          character.attacks.push(attack._id);
           character.save();
         });
     });
@@ -103,4 +160,7 @@ module.exports = {
   hacker: exampleHacker,
   addSpell: addSpell,
   addSkill: addSkill,
+  addSave: addSave,
+  addStat: addStat,
+  addAttack: addAttack,
 };
