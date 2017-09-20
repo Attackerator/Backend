@@ -4,13 +4,21 @@
   "scripts": {
   },
   "env": {
+    "MONGODB_URI": {
+      "required": true
+    },
+    "APP_SECRET": {
+      "required": true
+    },
   },
   "formation": {
   },
   "addons": [
-
-  ],
-  "buildpacks": [
-
-  ]
+   "mongolab"
+ ],
+ "buildpacks": [
+   {
+     "url": "heroku/nodejs"
+   }
+ ]
 }
