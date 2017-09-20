@@ -18,11 +18,8 @@ router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
       return Spell.createSpell(req.body)
         .then(spell => {
           character.spells.push(spell._id);
+          character.save();
           res.json(spell);
-          return character.spells;
-        })
-        .then(spells => {
-          Character.findByIdAndUpdate(req.params.characterId,{ spells },{ runValidators: true});
         });
     })
     .catch(next);

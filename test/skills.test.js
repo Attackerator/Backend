@@ -13,6 +13,11 @@ const debug = require('debug')('app:test/skills');
 
 require('../lib/mongoose-connect');
 
+const exampleSkill = {
+  name: 'underwater basket weaving',
+  bonus: 3,
+  stat: 'dexterity'
+};
 
 describe('Skills',function(){
   beforeEach(function () {
@@ -64,7 +69,9 @@ describe('Skills',function(){
 
     describe('GET /api/skill/:skillId',function(){
       beforeEach(function(){
-        return createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
+        exampleSkill.userId = this.testUser._id;
+        exampleSkill.characterId = this.testCharacter._id;
+        return createSkill(exampleSkill)
           .then(skill => this.testSkill = skill)
           .then(updatedSkills => {
             return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {skills: updatedSkills}},{new: true});

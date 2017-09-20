@@ -14,11 +14,9 @@ const skillsSchema = {
 
 const Skill = module.exports = mongoose.models.skill || mongoose.model('skill',skillsSchema);
 
-Skill.createSkill = function(body,userId,characterId){
+Skill.createSkill = function(body){
   debug(body);
   return new Skill({
     ...body,
-    userId,
-    characterId
   }).save();
 };

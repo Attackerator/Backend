@@ -15,15 +15,14 @@ router.post('/api/attack/:characterId', jsonParser, function (req, res, next) {
   Character.findById(req.params.characterId)
     .then(character => {
       debug(character);
-      return Attack.createAttack(req.body, req.user._id, character._id)
+      req.body.characterId = character._id;
+      req.body.userId = req.user._id;
+      return Attack.createAttack(req.body)
         .then(attack => {
           debug(attack);
           character.attack.push(attack._id);
+          character.save();
           res.json(attack);
-          return character.attacks;
-        })
-        .then(skills => {
-          Character.findbyIdAndUpdate(req.params.characterId, { skills}, { runValidators: true});
         });
     })
     .catch(next);
