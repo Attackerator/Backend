@@ -21,7 +21,7 @@ router.post('/api/attack/:characterId', jsonParser, function (req, res, next) {
         .then(attack => {
           debug(attack);
           character.attack.push(attack._id);
-          character.save;
+          character.save();
           res.json(attack);
         });
     })
