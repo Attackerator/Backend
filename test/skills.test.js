@@ -14,7 +14,7 @@ const debug = require('debug')('app:test/skills');
 require('../lib/mongoose-connect');
 
 
-describe.only('Skills',function(){
+describe('Skills',function(){
   beforeEach(function () {
     return createUser(helper.user)
       .then(user => this.testUser = user)
