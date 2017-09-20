@@ -10,12 +10,19 @@ const statSchema = Schema({
   constitution: { type: Number, required: true, default: 3},
   intelligence: { type: Number, required: true, default: 3},
   charisma: { type: Number, required: true, default: 3},
-  wisdom: { type: Number, required: true, default: 3}
+  wisdom: { type: Number, required: true, default: 3},
+  characterId: { type: Schema.Types.ObjectId, required: true},
+  userId: { type: Schema.Types.ObjectId, required: true}
 });
 
 const Stats = module.exports = mongoose.models.stat || mongoose.model('stat', statSchema);
 
-Stats.createStats = function(body) {
-  debug('createStat', body);
-  return new Stats(body).save();
+Stats.createStats = function(body, userId, characterId) {
+  debug('createStat', body, userId, characterId);
+  return new Stats({
+    ...body,
+    userId,
+    characterId
+  })
+    .save();
 };

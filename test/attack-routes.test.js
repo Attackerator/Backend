@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 
 const helper = require('./test-helper');
 const User = require('../model/user.js');
+const Character = require('../model/character.js');
 
 describe('attack routes', function() {
   describe('POST /api/attack', function() {
@@ -18,13 +19,20 @@ describe('attack routes', function() {
         .then(token => this.testToken = token);
     });
 
+    beforeEach(function () {
+      return Character.createCharacter(helper.character)
+        .then(character => {
+          this.testCharacter = character;
+        });
+    });
+
     afterEach(function () {
       return helper.kill();
     });
 
     it('should return an attack with ', function () {
       return request
-        .post('/api/attack')
+        .post(`/api/attack/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .send({
           name: 'test',
@@ -51,7 +59,7 @@ describe('attack routes', function() {
 
     it('should return 400 with invalid body', function () {
       return request
-        .post('/api/attack')
+        .post(`/api/attack/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .send()
         .expect(400);

@@ -13,11 +13,18 @@ const attackSchema = Schema({
   description: { type: String, required: false },
   toHitBonus: { type: Number, required: false },
   damageBonus: { type: Number, required: false },
+  characterId: { type: Schema.Types.ObjectId, required: true},
+  userId: { type: Schema.Types.ObjectId, required: true}
 });
 
 const Attack = module.exports = mongoose.models.attack || mongoose.model('attack', attackSchema);
 
-Attack.createAttack = function(body) {
-  debug('createAttack', body);
-  return new Attack(body).save();
+Attack.createAttack = function(body, userId, characterId) {
+  debug('createAttack', body, userId, characterId);
+  return new Attack({
+    ...body,
+    userId,
+    characterId
+  })
+    .save();
 };

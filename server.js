@@ -17,7 +17,7 @@ app.use(require('./routes/user-routes'));
 // Authentication, sets req.user
 app.use('/api/*', require('./lib/bearer-auth-middleware'));
 
-app.use(require('./routes/stats-route'));
+app.use(require('./routes/stats-routes'));
 app.use(require('./routes/character-routes'));
 app.use(require('./routes/attack-routes'));
 app.use(require('./routes/spell-route'));
