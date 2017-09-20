@@ -9,7 +9,7 @@
     },
     "APP_SECRET": {
       "required": true
-    },
+    }
   },
   "formation": {
   },
