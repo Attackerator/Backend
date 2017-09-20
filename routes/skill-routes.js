@@ -18,11 +18,28 @@ router.post('/api/:characterId/skill',jsonParser,(req,res,next) => {
           debug(skill);
           character.skills.push(skill._id);
           res.json(skill);
+          return character.skills;
+        })
+        .then(skills => {
+          Character.findByIdAndUpdate(req.params.characterId,{ skills },{ runValidators: true});
         });
     })
     .catch(next);
 });
+/*
+router.get('/api/:characterId/skills',function(req,res,next){
+  debug(`/api/${req.params.characterId}/skills`);
 
-router.get('/api/:characterId',function(){
-  
+  Character.findById(req.params.characterId)
+    .then(character => {
+      debug(character);
+      let skills = character.skills.map(skill => {
+        let skillObj = Skill.findById(skill._id).populate();
+        debug(skillObj);
+        return skillObj;
+      });
+      res.json(skills);
+    })
+    .catch(next);
 });
+*/

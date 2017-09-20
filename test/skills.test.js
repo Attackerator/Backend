@@ -5,7 +5,7 @@ const request = require('supertest')(app);
 const helper = require('./test-helper');
 
 const { createUser } = require('../model/user');
-const { createCharacter } = require('../model/character');
+const Character = require('../model/character');
 const { createSkill } = require('../model/skills');
 
 const { expect } = require('chai');
@@ -14,7 +14,7 @@ const debug = require('debug')('app:test/skills');
 require('../lib/mongoose-connect');
 
 
-describe('Skills',function(){
+describe.only('Skills',function(){
   beforeEach(function () {
     return createUser(helper.user)
       .then(user => this.testUser = user)
@@ -22,7 +22,7 @@ describe('Skills',function(){
       .then(token => this.testToken = token);
   });
   beforeEach(function(){
-    return createCharacter(helper.character,this.testUser._id)
+    return Character.createCharacter(helper.character,this.testUser._id)
       .then(character => {
         this.testCharacter = character;
         debug(character);
@@ -55,18 +55,28 @@ describe('Skills',function(){
           });
       });
     });
-    describe('GET /api/:characterid',function(){
+    /*
+    describe('GET /api/:characterid/skills',function(){
       beforeEach(function(){
         createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
-          .then(skill => this.testSkill = skill);
+          .then(skill => this.testSkill = skill)
+          .then(skill => {
+            let skills = [];
+            skills.push(skill);
+            return skills;
+          })
+          .then(updatedSkills => {
+            return Character.findByIdAndUpdate(this.testCharacter._id,{ skills: updatedSkills }, { runValidators: true });
+          });
       });
       afterEach(function(){
         delete this.testSkill;
 
         return helper.kill();
       });
+
       it('should return a skill for character',function(){
-        return request.post(`/api/${this.testCharacter._id}`)
+        return request.get(`/api/${this.testCharacter._id}/skills`)
           .set({Authorization: `Bearer ${this.testToken}`})
           .expect(200)
           .expect(res => {
@@ -78,5 +88,6 @@ describe('Skills',function(){
           });
       });
     });
+    */
   });
 });
