@@ -29,7 +29,7 @@ describe('Spell Routes',function(){
   });
   describe('POST /api/spell',function(){
     it('should return 200 if it saves a new spell',function(){
-      return request.post(`/api/${this.character._id}/spell`)
+      return request.post(`/api/spell/${this.character._id}`)
         .send(helper.spell)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(200)
@@ -40,10 +40,25 @@ describe('Spell Routes',function(){
         });
     });
     it('should return 400 if no body is provided',function(){
-      return request.post(`/api/${this.character._id}/spell`)
+      return request.post(`/api/spell/${this.character._id}`)
         .send()
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
+    });
+  });
+  describe('Routes',function(){
+    describe('POST /api/spell',function(){
+      it('should return a saved spell',function(){
+        return request.post(`/api/spell/${this.character._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .send(helper.spell)
+          .expect(200)
+          .expect(saved => {
+            expect(saved.body.name).to.equal('Donkey Fart');
+            expect(saved.body.damageBonus).to.deep.equal(7);
+            expect(saved.body.stat).to.equal('wisdom');
+          });
+      });
     });
   });
 });

@@ -21,6 +21,10 @@ router.post('/api/save/:characterId',jsonParser,(req,res,next) => {
         .then(save => {
           character.saves.push(save._id);
           res.json(save);
+          return character.saves;
+        })
+        .then(saves => {
+          Character.findByIdAndUpdate(req.params.characterId,{ saves },{ runValidators: true});
         });
     })
     .catch(next);

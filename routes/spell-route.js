@@ -9,8 +9,8 @@ const Spell = require('../model/spells');
 
 const router = module.exports = new Router();
 
-router.post('/api/:characterId/spell',jsonParser,(req,res,next) => {
-  debug(`/api/${req.params.characterId}/spell`);
+router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
+  debug(`/api/spell/${req.params.characterId}`);
   Character.findById(req.params.characterId)
     .then(character => {
       req.body.characterId = character._id;
@@ -19,6 +19,10 @@ router.post('/api/:characterId/spell',jsonParser,(req,res,next) => {
         .then(spell => {
           character.spells.push(spell._id);
           res.json(spell);
+          return character.spells;
+        })
+        .then(spells => {
+          Character.findByIdAndUpdate(req.params.characterId,{ spells },{ runValidators: true});
         });
     })
     .catch(next);
