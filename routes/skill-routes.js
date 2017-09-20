@@ -10,11 +10,12 @@ const debug = require('debug')('app:routes/skill');
 const router = module.exports = new Router();
 
 router.post('/api/skill/:characterId',jsonParser,(req,res,next) => {
+  req.body.userId = req.user._id;
+  req.body.characterId = req.params.characterId;
   debug(`/api/skill/${req.params.characterId}`);
-
   Character.findById(req.params.characterId)
     .then(character => {
-      return Skill.createSkill(req.body,req.user._id,character._id)
+      return Skill.createSkill(req.body)
         .then(skill => {
           debug(skill);
           character.skills.push(skill._id);
