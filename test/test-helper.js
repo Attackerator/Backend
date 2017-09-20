@@ -7,6 +7,12 @@ const Spell = require('../model/spells');
 const Skill = require('../model/skills');
 const Save = require('../model/save');
 
+const exampleHacker = {
+  username: 'Imahack',
+  password: 'password',
+  email: 'email@example.com'
+};
+
 const exampleSpell = {
   name: 'Donkey Fart',
   stat: 'wisdom',
@@ -65,4 +71,5 @@ module.exports = {
   character: exampleCharacter,
   kill: deleteCharacter,
   skill: exampleSkill,
+  hacker: exampleHacker
 };
