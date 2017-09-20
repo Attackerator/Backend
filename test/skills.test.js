@@ -104,12 +104,11 @@ describe('Skills',function(){
     });
     describe('PUT /api/skill/:skillId',function(){
       beforeEach(function(){
-        return createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
-          .then(skill => this.testSkill = skill)
-          .then(updatedSkills => {
-            return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {skills: updatedSkills}},{new: true});
-          })
-          .then(character => debug(character));
+        return helper.addSkill(this.testCharacter._id,this.testUser._id)
+          .then(skill => {
+            debug('Test Skill',skill);
+            this.testSkill = skill;
+          });
       });
       afterEach(function(){
         delete this.testSkill;

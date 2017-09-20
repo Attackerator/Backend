@@ -47,7 +47,7 @@ describe('Character Routes',function(){
     });
     it('should return a character populated with skills, stats, etc.', function(){
       return request
-        .get(`/api/character/${this.testCharacter.id}`)
+        .get(`/api/character/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(200)
         .expect(res => {
