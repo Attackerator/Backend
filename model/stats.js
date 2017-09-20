@@ -17,12 +17,10 @@ const statSchema = Schema({
 
 const Stats = module.exports = mongoose.models.stat || mongoose.model('stat', statSchema);
 
-Stats.createStats = function(body, userId, characterId) {
-  debug('createStat', body, userId, characterId);
+Stats.createStats = function(body) {
+  debug('createStat', body);
   return new Stats({
     ...body,
-    userId,
-    characterId
   })
     .save();
 };

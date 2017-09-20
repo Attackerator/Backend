@@ -37,10 +37,13 @@ describe('Character Routes',function(){
       return helper.addSkill(this.testCharacter.id,this.testUser._id);
     });
     beforeEach(function(){
-      return helper.addSpell(this.testCharacter.id,this.testUser._id);
+      return helper.addStat(this.testCharacter.id,this.testUser._id);
     });
     beforeEach(function(){
-      return helper.addSkill(this.testCharacter.id,this.testUser._id);
+      return helper.addSave(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addAttack(this.testCharacter.id,this.testUser._id);
     });
     it('should return a character populated with skills, stats, etc.', function(){
       return request

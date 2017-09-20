@@ -130,9 +130,9 @@ const addAttack = function (characterId, userId){
       debug(character);
       exampleAttack.characterId = characterId;
       exampleAttack.userId = userId;
-      return Attack.CreateAttack(exampleAttack)
+      return Attack.createAttack(exampleAttack)
         .then(attack => {
-          character.attacks.push(attack._id);
+          character.attack.push(attack._id);
           character.save();
         });
     });

@@ -18,7 +18,7 @@ router.get('/api/character/:id', (req,res,next) =>{
     .populate('skills')
     .populate('spells')
     .populate('saves')
-    .populate('attacks')
+    .populate('attack')
     .then(character => {
       debug(character);
       if (!character)
