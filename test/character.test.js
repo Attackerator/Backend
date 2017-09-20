@@ -24,7 +24,7 @@ describe('Character Routes',function(){
   afterEach(function(){
     return helper.kill();
   });
-  describe.only('GET /api/character/:id', function(){
+  describe('GET /api/character/:id', function(){
     beforeEach(function (){
       exampleCharacter.userId = this.testUser._id;
       return Character.createCharacter(exampleCharacter)
