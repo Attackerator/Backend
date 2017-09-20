@@ -6,6 +6,7 @@ const debug = require('debug')('app:routes/spell');
 
 const Character = require('../model/character');
 const Spell = require('../model/spells');
+const createError = require('http-errors');
 
 const router = module.exports = new Router();
 
@@ -21,6 +22,20 @@ router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
           character.save();
           res.json(spell);
         });
+    })
+    .catch(next);
+});
+
+router.get('/api/save/:id', (req, res, next) => {
+  debug(`GET /api/save/${req.params.id}`);
+
+  Spell.findById(req.params.id)
+    .then(spell => {
+      if (spell.userID.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
+        return next(createError(401, 'permission denied'));
+      }
+      res.json(spell);
     })
     .catch(next);
 });

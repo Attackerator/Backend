@@ -8,8 +8,9 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
+const { createSave } = require('../model/save');
 
-describe('Save Routes',function(){
+describe.only('Save Routes',function(){
   beforeEach(function () {
     return User.createUser(helper.user)
       .then(user => this.testUser = user)
@@ -45,6 +46,70 @@ describe('Save Routes',function(){
       return request.post(`/api/save/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
+    });
+  });
+  describe('GET /api/save/:id', function () {
+    describe('invalid id', function () {
+      it('should return 404', function () {
+        return request
+          .get('/api/save/missing')
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
+          .expect(404);
+      });
+    });
+    describe('missing id', function () {
+      it('should return 404', function () {
+        return request
+          .get('/api/save/deadcodedeadcodedeadcode')
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
+          .expect(404);
+      });
+    });
+    describe('valid id', function () {
+      beforeEach(function(){
+        return createSave(helper.save)
+          .then(save => this.testSave = save)
+          .then(updatedSaves => {
+            return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {saves: updatedSaves}},{new: true});
+          })
+          .then(character => debug(character));
+      });
+      afterEach(function() {
+        delete this.testSkill;
+        return helper.kill();
+      });
+      it('should return a save', function () {
+        return request
+          .get(`/api/save/${this.helper.save._id}`)
+          .set({
+            'Authorization': `Bearer ${this.testToken}`,
+          })
+          .expect(200)
+          .expect(res => {
+            expect(res.body.type).to.equal(helper.save.type);
+            expect(res.body).to.have.property('stat', helper.save.stat);
+          });
+      });
+      describe(`someone else's save`, function () {
+        beforeEach(function () {
+          return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
+            .then(hacker => this.hacker = hacker)
+            .then(hacker => hacker.generateToken())
+            .then(hackerToken => this.hackerToken = hackerToken);
+        });
+        it('should return 401', function () {
+          return request
+            .get(`/api/save/${this.helper.save._id}`)
+            .set({
+              Authorization: `Bearer ${this.hackerToken}`,
+            })
+            .expect(401);
+        });
+      });
     });
   });
 });
