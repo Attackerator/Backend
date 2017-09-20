@@ -15,8 +15,8 @@ router.get('/api/character/:id', (req,res,next) =>{
 
   Character.findById(req.params.id)
     //.populate('stats')
-    //.populate('skills')
-    //.populate('spells')
+    .populate('skills')
+    .populate('spells')
     //.populate('saves')
     //.populate('attacks')
     .then(character => {

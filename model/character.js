@@ -7,11 +7,11 @@ const debug = require('debug')('app:model/character');
 const characterSchema = {
   userId: { type: Schema.Types.ObjectId, required: true},
   name: { type: String, required: true },
-  stats: [{ type: Schema.Types.ObjectId }],
-  skills: [{ type: Schema.Types.ObjectId }],
-  saves: [{ type: Schema.Types.ObjectId }],
-  spells: [{ type: Schema.Types.ObjectId }],
-  attack: [{ type: Schema.Types.ObjectId }],
+  stats: [{ type: Schema.Types.ObjectId, ref: 'stat'  }],
+  skills: [{ type: Schema.Types.ObjectId, ref: 'skill' }],
+  saves: [{ type: Schema.Types.ObjectId, ref: 'save' }],
+  spells: [{ type: Schema.Types.ObjectId, ref: 'spell' }],
+  attack: [{ type: Schema.Types.ObjectId, ref: 'attack' }],
   sayings: [{ type: Schema.Types.ObjectId }],
 };
 
