@@ -8,22 +8,40 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 
 const User = require('../model/user');
+const Character = require('../model/character');
 
 const exampleCharacter = {
   name: 'dustinyschild'
 };
 
 describe('Character Routes',function(){
+  beforeEach(function(){
+    return User.createUser(helper.user)
+      .then(user => this.testUser = user)
+      .then(user => user.generateToken())
+      .then(token => this.testToken = token);
+  });
+  afterEach(function(){
+    return helper.kill();
+  });
+  describe.only('GET /api/character/:id', function(){
+    beforeEach(function (){
+      return new Character({...exampleCharacter,userId: this.testUser._id.toString()})
+        .save()
+        .then(character => this.testCharacter = character);
+    });
+    it('should return a character maybe probably?', function(){
+      return request
+        .get(`/api/character/${this.testCharacter.id}`)
+        .set({'Authorization': `Bearer ${this.testToken}`})
+        .expect(200)
+        .expect(res => {
+          debug(res.body);
+          expect(res.body.name).to.equal(exampleCharacter.name);
+        });
+    });
+  });
   describe('POST /api/character',function(){
-    beforeEach(function(){
-      return User.createUser(helper.user)
-        .then(user => this.testUser = user)
-        .then(user => user.generateToken())
-        .then(token => this.testToken = token);
-    });
-    afterEach(function(){
-      return User.remove({});
-    });
     it('should return 200 if it saves a new character',function(){
       return request.post(`/api/character`)
         .send(exampleCharacter)
