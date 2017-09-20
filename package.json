@@ -6,7 +6,7 @@
   "scripts": {
     "test": "cross-env DEBUG=app:* mocha",
     "test:watch": "cross-env DEBUG=app:* mocha -w",
-    "start": "cross-env DEBUG=app:* nodemon server.js",
+    "start": "cross-env DEBUG=app:* node server.js",
     "lint": "eslint ."
   },
   "repository": {
@@ -39,5 +39,9 @@
     "jsonwebtoken": "^8.0.1",
     "mongoose": "^4.11.11",
     "morgan": "^1.8.2"
+  },
+  "engines": {
+    "node": "^8.4.0"
   }
+
 }
