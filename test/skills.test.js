@@ -102,5 +102,36 @@ describe('Skills',function(){
           .expect(401);
       });
     });
+    describe('PUT /api/skill/:skillId',function(){
+      beforeEach(function(){
+        return createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
+          .then(skill => this.testSkill = skill)
+          .then(updatedSkills => {
+            return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {skills: updatedSkills}},{new: true});
+          })
+          .then(character => debug(character));
+      });
+      afterEach(function(){
+        delete this.testSkill;
+
+        return helper.kill();
+      });
+      it('should return updated skill',function(){
+        return request.put(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .send({name: 'updatedSkill',bonus: 4})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.name).to.equal('updatedSkill');
+            expect(res.body.bonus).to.equal(4);
+            expect(res.body.stat).to.equal('dexterity');
+          });
+      });
+      it('should return 401 for invalid user',function(){
+        return request.put(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
+      });
+    });
   });
 });
