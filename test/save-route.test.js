@@ -8,7 +8,6 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
-const { createSave } = require('../model/save');
 
 describe.only('Save Routes',function(){
   beforeEach(function () {
@@ -71,12 +70,7 @@ describe.only('Save Routes',function(){
     });
     describe('valid id', function () {
       beforeEach(function(){
-        return createSave(helper.save)
-          .then(save => this.testSave = save)
-          .then(updatedSaves => {
-            return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {saves: updatedSaves}},{new: true});
-          })
-          .then(character => debug(character));
+        return helper.addSave(this.testCharacter.id,this.testUser._id);
       });
       afterEach(function() {
         delete this.testSkill;
@@ -84,7 +78,7 @@ describe.only('Save Routes',function(){
       });
       it('should return a save', function () {
         return request
-          .get(`/api/save/${this.helper.save._id}`)
+          .get(`/api/save/${this.testSave._id}`)
           .set({
             'Authorization': `Bearer ${this.testToken}`,
           })
@@ -103,7 +97,7 @@ describe.only('Save Routes',function(){
         });
         it('should return 401', function () {
           return request
-            .get(`/api/save/${this.helper.save._id}`)
+            .get(`/api/save/${this.testSave._id}`)
             .set({
               Authorization: `Bearer ${this.hackerToken}`,
             })
