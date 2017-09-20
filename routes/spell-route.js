@@ -4,17 +4,26 @@ const Router = require('express');
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('app:routes/spell');
 
-const { createSpell } = require('../model/spells');
+const Character = require('../model/character');
+const Spell = require('../model/spells');
 
 const router = module.exports = new Router();
 
-router.post('/api/spell',jsonParser,(req,res,next) => {
-  debug(`POST /api/spell`);
-  debug(req.body);
-
-  createSpell({
-    ...req.body
-  })
-    .then(spell => res.json(spell))
+router.post('/api/spell/:characterId',jsonParser,(req,res,next) => {
+  debug(`/api/spell/${req.params.characterId}`);
+  Character.findById(req.params.characterId)
+    .then(character => {
+      req.body.characterId = character._id;
+      req.body.userId = req.user._id;
+      return Spell.createSpell(req.body)
+        .then(spell => {
+          character.spells.push(spell._id);
+          res.json(spell);
+          return character.spells;
+        })
+        .then(spells => {
+          Character.findByIdAndUpdate(req.params.characterId,{ spells },{ runValidators: true});
+        });
+    })
     .catch(next);
 });

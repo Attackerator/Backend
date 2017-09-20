@@ -5,6 +5,7 @@ const Stats = require('../model/stats');
 const Character = require('../model/character');
 const Spell = require('../model/spells');
 const Skill = require('../model/skills');
+const Save = require('../model/save');
 
 const exampleSpell = {
   name: 'Donkey Fart',
@@ -16,7 +17,11 @@ const exampleSpell = {
   diceCount: '5',
   description: 'Fills a sixty foot area of effect centered on caster. Everything in effected area rolls fortitude check. Half damage on miss.',
 };
-
+const exampleSave = {
+  type: 'fortitude',
+  stat: 'constitution',
+  bonus: 5,
+};
 const exampleBody = {
   username: 'MrDonkey1028'
   ,email: 'donkey@example.com'
@@ -32,7 +37,7 @@ const exampleStats = {
 };
 const exampleCharacter ={
   name: 'SuperDonkey',
-  user: 'deadbeefdeadbeefdeadbeef',
+  userId: 'deadbeefdeadbeefdeadbeef',
 };
 
 const exampleSkill = {
@@ -47,11 +52,13 @@ const deleteCharacter = function(){
     Stats.remove({}),
     Spell.remove({}),
     Character.remove({}),
-    Skill.remove({})
+    Skill.remove({}),
+    Save.remove({}),
   ]);
 };
 
 module.exports = {
+  save: exampleSave,
   spell: exampleSpell,
   user: exampleBody,
   stats: exampleStats,

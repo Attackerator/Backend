@@ -3,13 +3,13 @@
 const app = require('../server');
 const request = require('supertest')(app);
 const { expect } = require('chai');
-const debug = require('debug')('app:test/spell');
+const debug = require('debug')('app:test/save');
 require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
 
-describe('Spell Routes',function(){
+describe('Save Routes',function(){
   beforeEach(function () {
     return User.createUser(helper.user)
       .then(user => this.testUser = user)
@@ -27,38 +27,24 @@ describe('Spell Routes',function(){
   afterEach(function(){
     return helper.kill();
   });
-  describe('POST /api/spell',function(){
-    it('should return 200 if it saves a new spell',function(){
-      return request.post(`/api/spell/${this.character._id}`)
-        .send(helper.spell)
+  describe('POST /api/save',function(){
+    it('should return 200 if it saves a new save',function(){
+      debug(this.character._id);
+      debug(helper.save);
+      return request.post(`/api/save/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
+        .send(helper.save)
         .expect(200)
         .expect(res => {
-          debug(res.body.name);
-          expect(res.body.name).to.equal('Donkey Fart');
-          expect(res.body.description).to.not.be.null;
+          debug(res.body.type);
+          expect(res.body.type).to.equal('fortitude');
+          expect(res.body.stat).to.equal('constitution');
         });
     });
     it('should return 400 if no body is provided',function(){
-      return request.post(`/api/spell/${this.character._id}`)
-        .send()
+      return request.post(`/api/save/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
-    });
-  });
-  describe('Routes',function(){
-    describe('POST /api/spell',function(){
-      it('should return a saved spell',function(){
-        return request.post(`/api/spell/${this.character._id}`)
-          .set({Authorization: `Bearer ${this.testToken}`})
-          .send(helper.spell)
-          .expect(200)
-          .expect(saved => {
-            expect(saved.body.name).to.equal('Donkey Fart');
-            expect(saved.body.damageBonus).to.deep.equal(7);
-            expect(saved.body.stat).to.equal('wisdom');
-          });
-      });
     });
   });
 });
