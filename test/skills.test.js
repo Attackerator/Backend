@@ -6,6 +6,7 @@ const helper = require('./test-helper');
 
 const { createUser } = require('../model/user');
 const Character = require('../model/character');
+const Skill = require('../model/skills');
 const { createSkill } = require('../model/skills');
 
 const { expect } = require('chai');
@@ -36,7 +37,6 @@ describe('Skills',function(){
     return Character.createCharacter(helper.character,this.testUser._id)
       .then(character => {
         this.testCharacter = character;
-        debug(character);
       });
   });
   afterEach(function(){
@@ -75,8 +75,7 @@ describe('Skills',function(){
           .then(skill => this.testSkill = skill)
           .then(updatedSkills => {
             return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {skills: updatedSkills}},{new: true});
-          })
-          .then(character => debug(character));
+          });
       });
       afterEach(function(){
         delete this.testSkill;
@@ -100,6 +99,64 @@ describe('Skills',function(){
         return request.get(`/api/skill/${this.testSkill._id}`)
           .set({Authorization: `Bearer ${this.hackerToken}`})
           .expect(401);
+      });
+    });
+    describe('PUT /api/skill/:skillId',function(){
+      beforeEach(function(){
+        return helper.addSkill(this.testCharacter._id,this.testUser._id)
+          .then(skill => {
+            debug('Test Skill',skill);
+            this.testSkill = skill;
+          });
+      });
+      afterEach(function(){
+        delete this.testSkill;
+
+        return helper.kill();
+      });
+      it('should return updated skill',function(){
+        return request.put(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .send({name: 'updatedSkill',bonus: 4})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.name).to.equal('updatedSkill');
+            expect(res.body.bonus).to.equal(4);
+            expect(res.body.stat).to.equal('dexterity');
+          });
+      });
+      it('should return 401 for invalid user',function(){
+        return request.put(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
+      });
+    });
+    describe('DELETE /api/skill/:skillId',function(){
+      beforeEach(function(){
+        return helper.addSkill(this.testCharacter._id,this.testUser._id)
+          .then(skill => {
+            debug('Test Skill',skill);
+            this.testSkill = skill;
+          });
+      });
+      afterEach(function(){
+        delete this.testSkill;
+
+        return helper.kill();
+      });
+      it('should return the deleted skill', function(){
+        return request.delete(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(200)
+          .expect(res => {
+            expect(res.body._id).to.equal(this.testSkill._id.toString());
+          })
+          .then(() => {
+            return Skill.findById(this.testSkill._id)
+              .then(deleted => {
+                expect(deleted).to.be.null;
+              });
+          });
       });
     });
   });

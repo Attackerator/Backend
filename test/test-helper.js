@@ -67,7 +67,7 @@ const exampleSkill = {
 };
 
 const addSkill = function(characterId, userId){
-  Character.findById(characterId)
+  return Character.findById(characterId)
     .then(character => {
       debug(character);
       exampleSkill.characterId = characterId;
@@ -77,6 +77,7 @@ const addSkill = function(characterId, userId){
           debug(skill);
           character.skills.push(skill._id);
           character.save();
+          return skill;
         });
     });
 };
