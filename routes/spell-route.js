@@ -39,3 +39,17 @@ router.get('/api/spell/:id', (req, res, next) => {
     })
     .catch(next);
 });
+
+router.put(`/api/spell/:id`,jsonParser,function(req,res,next){
+  debug(`/api/spell/${req.params.id}`);
+
+  Spell.findByIdAndUpdate(req.params.id,req.body,{ new: true })
+    .then(spell => {
+      if (spell.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
+        return next(createError(401, 'permission denied'));
+      }
+      res.json(spell);
+    })
+    .catch(next);
+});
