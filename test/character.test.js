@@ -30,8 +30,20 @@ describe('Character Routes',function(){
       return Character.createCharacter(exampleCharacter)
         .then(character => this.testCharacter = character);
     });
+    beforeEach(function(){
+      return helper.addSpell(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSkill(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSpell(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSkill(this.testCharacter.id,this.testUser._id);
+    });
     it('should return a character maybe probably?', function(){
-      helper.addSpell(this.testCharacter.id,this.testUser._id);
+
       //helper.addSpell(this.testCharacter.id,this.testUser._id);
       ///helper.addSpell(this.testCharacter.id,this.testUser._id);
       return request

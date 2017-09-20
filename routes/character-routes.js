@@ -37,7 +37,7 @@ router.get('/api/character/:id', (req,res,next) =>{
 router.post('/api/character',jsonParser,(req,res,next) => {
   debug(`POST /api/character`);
   req.body.userId = req.user._id;
-  return Character.createCharacter({
+  Character.createCharacter({
     ...req.body
   })
     .then(character => res.json(character))

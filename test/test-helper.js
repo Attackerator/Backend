@@ -53,6 +53,20 @@ const exampleSkill = {
   stat: 'dexterity'
 };
 
+const addSkill = function(characterId, userId){
+  Character.findById(characterId)
+    .then(character => {
+      debug(character);
+      return Skill.createSkill(exampleSkill,userId,characterId)
+        .then(skill => {
+          debug(skill);
+          character.skills.push(skill._id);
+          character.save();
+        });
+    });
+};
+
+
 const addSpell = function (characterId, userId){
   return Character.findById(characterId)
     .then(character => {
@@ -88,4 +102,5 @@ module.exports = {
   skill: exampleSkill,
   hacker: exampleHacker,
   addSpell: addSpell,
+  addSkill: addSkill,
 };
