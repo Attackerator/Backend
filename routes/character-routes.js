@@ -20,6 +20,7 @@ router.get('/api/character/:id', (req,res,next) =>{
     .populate('saves')
     .populate('attacks')
     .then(character => {
+      debug(character);
       if (!character)
         return res.sendStatus(404);
 

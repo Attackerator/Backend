@@ -26,11 +26,14 @@ describe('Character Routes',function(){
   });
   describe.only('GET /api/character/:id', function(){
     beforeEach(function (){
-      return new Character({...exampleCharacter,userId: this.testUser._id.toString()})
-        .save()
+      exampleCharacter.userId = this.testUser._id;
+      return Character.createCharacter(exampleCharacter)
         .then(character => this.testCharacter = character);
     });
     it('should return a character maybe probably?', function(){
+      helper.addSpell(this.testCharacter.id,this.testUser._id);
+      //helper.addSpell(this.testCharacter.id,this.testUser._id);
+      //helper.addSpell(this.testCharacter.id,this.testUser._id);
       return request
         .get(`/api/character/${this.testCharacter.id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})

@@ -6,6 +6,7 @@ const Character = require('../model/character');
 const Spell = require('../model/spells');
 const Skill = require('../model/skills');
 const Save = require('../model/save');
+const debug = require('debug')('app:test/HELPER');
 
 const exampleHacker = {
   username: 'Imahack',
@@ -52,6 +53,23 @@ const exampleSkill = {
   stat: 'dexterity'
 };
 
+const addSpell = function (characterId, userId){
+  return Character.findById(characterId)
+    .then(character => {
+      debug(character);
+      exampleSpell.characterId = characterId;
+      exampleSpell.userId = userId;
+      return Spell.createSpell(exampleSpell)
+        .then(spell => {
+          character.spells.push(spell._id);
+          return character.spells;
+        })
+        .then(spells => {
+          Character.findByIdAndUpdate(characterId,{ spells },{ runValidators: true});
+        });
+    });
+};
+
 const deleteCharacter = function(){
   Promise.all([
     User.remove({}),
@@ -71,5 +89,6 @@ module.exports = {
   character: exampleCharacter,
   kill: deleteCharacter,
   skill: exampleSkill,
-  hacker: exampleHacker
+  hacker: exampleHacker,
+  addSpell: addSpell,
 };
