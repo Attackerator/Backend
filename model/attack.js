@@ -21,10 +21,10 @@ const Attack = module.exports = mongoose.models.attack || mongoose.model('attack
 
 Attack.createAttack = function(body, userId, characterId) {
   debug('createAttack', body, userId, characterId);
-  return new Attack(
+  return new Attack({
     ...body,
     userId,
     characterId
-  )
+  })
     .save();
 };

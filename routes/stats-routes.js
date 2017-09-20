@@ -9,20 +9,21 @@ const Character = require('../model/character');
 
 const router = module.exports = new Router();
 
-router.post('/api/stats:characterId', jsonParser, function (req, res, next) {
-  debug('POST /api/stats');
+router.post('/api/stats/:characterId', jsonParser, function (req, res, next) {
+  debug('POST /api/stats/:characterId');
 
-  Character.findbyId(req.params.characterId)
+  Character.findById(req.params.characterId)
     .then(character => {
-      this.character = character;
-      return this.character;
-    })
-    .then(character => {
-      Stats.createstats(req.body, req.user._id, character._id)
+      debug(character);
+      return Stats.createStats(req.body, req.user._id, character._id)
         .then(stats => {
+          debug(stats);
           character.stats.push(stats._id);
-          this.stats = stats;
-          res.json(this);
+          res.json(stats);
+          return character.stats;
+        })
+        .then(stats => {
+          Character.findbyIdAndUpdate(req.params.characterId, { stats },{ runValidators: true});
         });
     })
     .catch(next);

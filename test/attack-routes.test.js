@@ -20,7 +20,7 @@ describe('attack routes', function() {
     });
 
     beforeEach(function () {
-      return Character.createCharacter(helper.character, this.testUser._id)
+      return Character.createCharacter(helper.character)
         .then(character => {
           this.testCharacter = character;
         });
@@ -32,7 +32,7 @@ describe('attack routes', function() {
 
     it('should return an attack with ', function () {
       return request
-        .post('/api/attack')
+        .post(`/api/attack/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .send({
           name: 'test',
@@ -43,7 +43,7 @@ describe('attack routes', function() {
           description: 'does a thing',
           toHitBonus: 2,
           damageBonus: 2
-        }, this.testUser._id, this.testCharacter._id)
+        })
         .expect(200)
         .expect(res => {
           expect(res.body.name).to.equal('test');
@@ -59,7 +59,7 @@ describe('attack routes', function() {
 
     it('should return 400 with invalid body', function () {
       return request
-        .post('/api/attack')
+        .post(`/api/attack/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .send()
         .expect(400);

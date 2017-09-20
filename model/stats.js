@@ -19,10 +19,10 @@ const Stats = module.exports = mongoose.models.stat || mongoose.model('stat', st
 
 Stats.createStats = function(body, userId, characterId) {
   debug('createStat', body, userId, characterId);
-  return new Stats(
+  return new Stats({
     ...body,
     userId,
     characterId
-  )
+  })
     .save();
 };
