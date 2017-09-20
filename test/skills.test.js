@@ -42,9 +42,9 @@ describe('Skills',function(){
     });
   });
   describe('Routes',function(){
-    describe('POST /api/:characterid/skill',function(){
+    describe('POST /api/skill/:characterid',function(){
       it('should return a saved skill',function(){
-        return request.post(`/api/${this.testCharacter._id}/skill`)
+        return request.post(`/api/skill/${this.testCharacter._id}`)
           .set({Authorization: `Bearer ${this.testToken}`})
           .send(helper.skill)
           .expect(200)
@@ -55,19 +55,15 @@ describe('Skills',function(){
           });
       });
     });
-    /*
-    describe('GET /api/:characterid/skills',function(){
+
+    describe('GET /api/skill/:skillId',function(){
       beforeEach(function(){
-        createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
+        return createSkill(helper.skill,this.testUser._id,this.testCharacter._id)
           .then(skill => this.testSkill = skill)
-          .then(skill => {
-            let skills = [];
-            skills.push(skill);
-            return skills;
-          })
           .then(updatedSkills => {
-            return Character.findByIdAndUpdate(this.testCharacter._id,{ skills: updatedSkills }, { runValidators: true });
-          });
+            return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {skills: updatedSkills}},{new: true});
+          })
+          .then(character => debug(character));
       });
       afterEach(function(){
         delete this.testSkill;
@@ -75,19 +71,18 @@ describe('Skills',function(){
         return helper.kill();
       });
 
-      it('should return a skill for character',function(){
-        return request.get(`/api/${this.testCharacter._id}/skills`)
+      it('should return a skill',function(){
+        return request.get(`/api/skill/${this.testSkill._id}`)
           .set({Authorization: `Bearer ${this.testToken}`})
           .expect(200)
           .expect(res => {
             expect(res.body.name).to.equal('underwater basket weaving');
             expect(res.body.bonus).to.deep.equal(3);
             expect(res.body.stat).to.equal('dexterity');
-            expect(res.body.userId).to.equal(this.testUser._id);
-            expect(res.body.characterId).to.equal(this.testCharacter._id);
+            expect(res.body.userId.toString()).to.equal(this.testUser._id.toString());
+            expect(res.body.characterId).to.equal(this.testCharacter._id.toString());
           });
       });
     });
-    */
   });
 });

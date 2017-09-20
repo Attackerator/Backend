@@ -2,13 +2,14 @@
 
 const Router = require('express');
 const jsonParser = require('body-parser').json();
+const createError = require('http-errors');
 const Skill = require('../model/skills');
 const Character = require('../model/character');
 const debug = require('debug')('app:routes/skill');
 
 const router = module.exports = new Router();
 
-router.post('/api/:characterId/skill',jsonParser,(req,res,next) => {
+router.post('/api/skill/:characterId',jsonParser,(req,res,next) => {
   debug(`/api/skill/${req.params.characterId}`);
 
   Character.findById(req.params.characterId)
@@ -26,20 +27,17 @@ router.post('/api/:characterId/skill',jsonParser,(req,res,next) => {
     })
     .catch(next);
 });
-/*
-router.get('/api/:characterId/skills',function(req,res,next){
-  debug(`/api/${req.params.characterId}/skills`);
 
-  Character.findById(req.params.characterId)
-    .then(character => {
-      debug(character);
-      let skills = character.skills.map(skill => {
-        let skillObj = Skill.findById(skill._id).populate();
-        debug(skillObj);
-        return skillObj;
-      });
-      res.json(skills);
+router.get('/api/skill/:skillId',function(req,res,next){
+  debug(`/api/skill/${req.params.skillId}`);
+
+  return Skill.findById(req.params.skillId)
+    .then(skill => {
+      if (skill.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${skill.userID})`);
+        return next(createError(401, 'permission denied'));
+      }
+      return skill;
     })
-    .catch(next);
+    .then(skill => res.json(skill));
 });
-*/
