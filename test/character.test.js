@@ -67,11 +67,9 @@ describe('Character Routes',function(){
         });
     });
     describe('GET /api/characters',function(){
-      beforeEach(function(){
-        Promise.all([
-          Character.createCharacter({name: 'Character2',userId: this.testUser._id}),
-          Character.createCharacter({name: 'Character3',userId: this.testUser._id}),
-        ]);
+      beforeEach(async function(){
+        await Character.createCharacter({name: 'Character2',userId: this.testUser._id});
+        await Character.createCharacter({name: 'Character3',userId: this.testUser._id});
       });
       it('should return all characters for user',function(){
         return request.get('/api/characters')
@@ -79,7 +77,9 @@ describe('Character Routes',function(){
           .expect(200)
           .expect(res => {
             expect(res.body.length).to.equal(3);
+            expect(res.body[0].name).to.equal('dustinyschild');
             expect(res.body[1].name).to.equal('Character2');
+            expect(res.body[2].name).to.equal('Character3');
           });
       });
     });
@@ -101,7 +101,6 @@ describe('Character Routes',function(){
         .set({'Authorization': `Bearer ${this.testToken}`})
         .expect(400);
     });
-    //TODO: add validation checks for Auth headers
   });
 
   describe('PUT /api/stats/:id', function() {
