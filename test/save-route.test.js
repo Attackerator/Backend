@@ -99,15 +99,6 @@ describe('Save Routes',function(){
           });
       });
       describe(`someone else's save`, function () {
-        beforeEach(function () {
-          return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
-            .then(hacker => this.hacker = hacker)
-            .then(hacker => hacker.generateToken())
-            .then(hackerToken => this.hackerToken = hackerToken);
-        });
-        afterEach(function(){
-          return helper.kill();
-        });
         it('should return 401', function () {
           return request
             .get(`/api/save/${this.testSave._id}`)
