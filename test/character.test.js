@@ -9,6 +9,11 @@ const helper = require('./test-helper');
 
 const User = require('../model/user');
 const Character = require('../model/character');
+const Stats = require('../model/stats');
+const Skills = require('../model/skills');
+const Saves = require('../model/save');
+const Spells = require('../model/spells');
+const Attacks = require('../model/attack');
 
 const exampleCharacter = {
   name: 'dustinyschild'
@@ -129,6 +134,94 @@ describe('Character Routes',function(){
       debug('this is the token',this.hackerToken);
       return request
         .put(`/api/character/${this.testCharacter._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
+  });
+
+  describe.only('DELETE /api/character/:id',function(){
+    beforeEach(function (){
+      exampleCharacter.userId = this.testUser._id;
+      return Character.createCharacter(exampleCharacter)
+        .then(character => this.testCharacter = character);
+    });
+    beforeEach(function(){
+      return helper.addSpell(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSkill(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      Promise.all([
+        helper.addStat(this.testCharacter.id,this.testUser._id),
+        helper.addStat(this.testCharacter.id,this.testUser._id),
+        helper.addStat(this.testCharacter.id,this.testUser._id),
+      ]);
+    });
+    beforeEach(function(){
+      return helper.addSave(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addAttack(this.testCharacter.id,this.testUser._id);
+    });
+
+    it('should return the deleted character',function(){
+      return request.delete(`/api/character/${this.testCharacter._id}`)
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(res => {
+          return Character.findById(res.body._id)
+            .then(deleted => {
+              debug('deleted character', deleted);
+              expect(deleted).to.be.null;
+            });
+        })
+        .then(() => {
+          return Stats.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Skills.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Saves.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Stats.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Spells.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Attacks.find({characterId : this.testCharacter._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        });
+    });
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request.delete(`/api/character/${this.testCharacter._id}`)
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
     });

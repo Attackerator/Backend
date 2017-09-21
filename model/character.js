@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 const debug = require('debug')('app:model/character');
 
-const characterSchema = {
+const characterSchema = Schema({
   userId: { type: Schema.Types.ObjectId, required: true},
   name: { type: String, required: true },
   stats: [{ type: Schema.Types.ObjectId, ref: 'stat' }],
@@ -13,7 +13,7 @@ const characterSchema = {
   spells: [{ type: Schema.Types.ObjectId, ref: 'spell' }],
   attack: [{ type: Schema.Types.ObjectId, ref: 'attack' }],
   sayings: [{ type: Schema.Types.ObjectId }],
-};
+});
 
 const Character = module.exports = mongoose.models.character || mongoose.model('character',characterSchema);
 
