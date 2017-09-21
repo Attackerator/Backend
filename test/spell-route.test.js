@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
+const Spell = require('../model/spells');
 const { createSpell } = require('../model/spells');
 
 describe('Spell Routes',function(){
@@ -133,24 +134,41 @@ describe('Spell Routes',function(){
           expect(res.body.stat).to.equal('strength');
         });
     });
+    it('should return 401 for invalid user',function(){
+      return request.get(`/api/skill/${this.testSpell._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
   });
-  describe('DELETE /api/spell/:id',function(){
+  describe.only('DELETE /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
       return createSpell(helper.spell)
         .then(spell => this.testSpell = spell);
     });
+    beforeEach(function(){
+      return User.createUser(helper.hacker)
+        .then(hacker => this.hacker = hacker)
+        .then(hacker => hacker.generateToken())
+        .then(token => this.hackerToken = token);
+    });
     afterEach(function() {
       return helper.kill();
     });
     it('should return the deleted spell',function(){
       return request.delete(`/api/spell/${this.testSpell._id}`)
-        .set({ Authorization: `Bearer ${this.testToken}`})
-        .expect(200)
-        .expect(res => {
-          expect(res.body._id).to.equal(this.testSpell._id.toString());
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(res => {
+          Spell.findById(res.body._id)
+            .then(deleted => expect(deleted).to.be.null);
         });
+    });
+    it('should return 401 for invalid user',function(){
+      return request.delete(`/api/spell/${this.testSpell._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
     });
   });
 });
