@@ -101,7 +101,7 @@ describe('Skills',function(){
           .expect(401);
       });
     });
-    describe('PUT /api/skill/:skillId',function(){
+    describe.only('PUT /api/skill/:skillId',function(){
       beforeEach(function(){
         return helper.addSkill(this.testCharacter._id,this.testUser._id)
           .then(skill => {

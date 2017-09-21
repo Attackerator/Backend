@@ -43,14 +43,27 @@ router.get('/api/skill/:skillId',function(req,res,next){
 router.put('/api/skill/:skillId',jsonParser,function(req,res,next){
   debug(`/api/skill/${req.params.skillId}`);
   debug(req.body);
-  return Skill.findByIdAndUpdate(req.params.skillId,req.body,{ new: true })
-    .then(updatedSkill => {
-      if (updatedSkill.userId.toString() !== req.user._id.toString()) {
-        debug(`permission denied for ${req.user._id} (owner: ${updatedSkill.userId})`);
+  return Skill.findById(req.params.skillId)
+    .then(skill => {
+      debug(skill.userId);
+      if(!skill) return res.sendStatus(404);
+      if (skill.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${skill.userId})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-      debug(updatedSkill);
-      res.json(updatedSkill);
+      if(Object.keys(req.body).length === 0) return Promise.reject(createError(400, 'Invalid or missing body'));
+
+      for (var attr in Skill.schema.paths){
+        if((attr !== '_id') && (attr !== '__v')){
+          if (req.body[attr] !== undefined)
+            skill[attr] = req.body[attr];
+        }
+      }
+      skill.save()
+        .then(skill => {
+          debug(skill);
+          res.json(skill);
+        });
     })
     .catch(next);
 });
