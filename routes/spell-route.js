@@ -33,7 +33,7 @@ router.get('/api/spell/:id', (req, res, next) => {
     .then(spell => {
       if (spell.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       res.json(spell);
     })
@@ -48,10 +48,10 @@ router.put(`/api/spell/:id`,jsonParser,function(req,res,next){
       if (!spell) return res.sendStatus(404);
       if (spell.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       if(Object.keys(req.body).length === 0) {
-        return next(createError(400, 'Invalid or missing body'));
+        return Promise.reject(createError(400, 'Invalid or missing body'));
       }
       for (var attr in Spell.schema.paths){
         if ((attr !== '_id') && attr !== '__v'){
@@ -71,10 +71,10 @@ router.delete(`/api/spell/:id`,function(req,res,next){
   Spell.findById(req.params.id)
     .then(spell => {
       debug(spell);
-      if (!spell) return res.sendStatus(404);
+      if (!spell) return Promise.reject(createError(404));
       if (spell.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       spell.remove({});
       res.sendStatus(204);
