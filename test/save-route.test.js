@@ -8,6 +8,7 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
+const Save = require('../model/save');
 const { createSave } = require('../model/save');
 
 describe('Save Routes',function(){
@@ -16,6 +17,12 @@ describe('Save Routes',function(){
       .then(user => this.testUser = user)
       .then(user => user.generateToken())
       .then(token => this.testToken = token);
+  });
+  beforeEach(function () {
+    return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
+      .then(hacker => this.hacker = hacker)
+      .then(hacker => hacker.generateToken())
+      .then(hackerToken => this.hackerToken = hackerToken);
   });
   beforeEach(function () {
     return Character.createCharacter(helper.character)
@@ -92,12 +99,6 @@ describe('Save Routes',function(){
           });
       });
       describe(`someone else's save`, function () {
-        beforeEach(function () {
-          return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
-            .then(hacker => this.hacker = hacker)
-            .then(hacker => hacker.generateToken())
-            .then(hackerToken => this.hackerToken = hackerToken);
-        });
         it('should return 401', function () {
           return request
             .get(`/api/save/${this.testSave._id}`)
@@ -106,6 +107,68 @@ describe('Save Routes',function(){
             })
             .expect(401);
         });
+      });
+    });
+  });
+  describe('PUT and DELETE: ',function(){
+    beforeEach(function(){
+      helper.save.characterId = this.character._id;
+      helper.save.userId = this.testUser._id;
+      return createSave(helper.save)
+        .then(save => this.testSave = save);
+    });
+    afterEach(function() {
+      return helper.kill();
+    });
+    describe('PUT /api/save/:id',function(){
+      it('should return an updated save',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .send({ type: 'newType'})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.type).to.equal('newType');
+            expect(res.body.bonus).to.equal(this.testSave.bonus);
+          });
+      });
+      it('should return 400 for an invalid body',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .send()
+          .expect(400);
+      });
+      it('should return 401 for invalid user',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .send({ type: 'newType'})
+          .expect(401);
+      });
+      it('should return 404 for save is not found',function(){
+        return request.put(`/api/save/deadcodedeadcodedeadcode`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .send({ type: 'newType'})
+          .expect(404);
+      });
+    });
+    describe('DELETE /api/save/:id',function(){
+      it('should return 204 when deleted',function(){
+        return request.delete(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .expect(204)
+          .then(() => {
+            Save.findById(this.testSave._id)
+              .then(deleted => expect(deleted).to.be.null);
+          });
+      });
+      it('should return 404 for save is not found',function(){
+        return request.delete(`/api/save/deadcodedeadcodedeadcode`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .expect(404);
+      });
+      it('should return 401 fir invalid user',function(){
+        return request.delete(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
       });
     });
   });
