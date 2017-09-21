@@ -29,6 +29,9 @@ router.post('/api/user', jsonParser, function (req,res,next){
 
   User.createUser(body)
     .then(user => user.generateToken())
+    .then(token => {
+      return token;
+    })
     .then(token => res.send(token))
     .catch(next);
 });

@@ -7,6 +7,9 @@
     "MONGODB_URI": {
       "required": true
     },
+    "DEBUG": {
+      "required": true
+    },
     "APP_SECRET": {
       "required": true
     }

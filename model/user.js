@@ -70,5 +70,9 @@ User.createUser = function(body) {
   const { password, ..._user } = body;
   return new User(_user)
     .generatePasswordHash(password)
+    .then(user => {
+      return user;
+    })
     .then(user => user.save());
+
 };
