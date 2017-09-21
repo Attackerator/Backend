@@ -54,7 +54,18 @@ router.put('/api/attack/:id', jsonParser, function(req, res, next) {
         debug(`permission denied for ${req.user._id} (owner: ${attack.userId})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-      res.json(attack);
+      if(Object.keys(req.body).length === 0) {
+        return Promise.reject(createError(400, 'Invalid or missing body'));
+      }
+      for (var attr in Attack.schema.paths){
+        if ((attr !== '_id') && attr !== '__v'){
+          if (req.body[attr] !== undefined){
+            attack[attr] = req.body[attr];
+          }
+        }
+      }
+      attack.save()
+        .then(attack => res.json(attack));
     })
     .catch(next);
 });

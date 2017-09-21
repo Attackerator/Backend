@@ -166,6 +166,22 @@ describe('attack routes', function() {
           expect(res.body.damageBonus).to.equal(2);
         });
     });
+
+    it('should return 400 with invalid body', function() {
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .send()
+        .expect(400);
+    });
+
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
   });
 
   describe('DELETE /api/stats/:id',function(){
@@ -183,7 +199,8 @@ describe('attack routes', function() {
       return helper.kill();
     });
     it('should return the deleted attack',function(){
-      return request.delete(`/api/attack/${this.testAttack._id}`)
+      return request
+        .delete(`/api/attack/${this.testAttack._id}`)
         .set({ 'Authorization': `Bearer ${this.testToken}`})
         .expect(204)
         .then(res => {
@@ -193,7 +210,8 @@ describe('attack routes', function() {
     });
     it('should return 401 for invalid user',function(){
       debug('this is the token',this.hackerToken);
-      return request.delete(`/api/attack/${this.testAttack._id}`)
+      return request
+        .delete(`/api/attack/${this.testAttack._id}`)
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
     });

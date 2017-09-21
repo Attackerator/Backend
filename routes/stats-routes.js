@@ -54,7 +54,18 @@ router.put('/api/stats/:id', jsonParser, function(req, res, next) {
         debug(`permission denied for ${req.user._id} (owner: ${stats.userId})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-      res.json(stats);
+      if(Object.keys(req.body).length === 0) {
+        return Promise.reject(createError(400, 'Invalid or missing body'));
+      }
+      for (var attr in Stats.schema.paths){
+        if ((attr !== '_id') && attr !== '__v'){
+          if (req.body[attr] !== undefined){
+            stats[attr] = req.body[attr];
+          }
+        }
+      }
+      stats.save()
+        .then(stats => res.json(stats));
     })
     .catch(next);
 });
