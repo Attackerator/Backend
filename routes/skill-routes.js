@@ -33,11 +33,12 @@ router.get('/api/skill/:skillId',function(req,res,next){
     .then(skill => {
       if (skill.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${skill.userId})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       debug(skill);
       return res.json(skill);
-    });
+    })
+    .catch(next);
 });
 
 router.put('/api/skill/:skillId',jsonParser,function(req,res,next){
@@ -45,7 +46,6 @@ router.put('/api/skill/:skillId',jsonParser,function(req,res,next){
   debug(req.body);
   return Skill.findById(req.params.skillId)
     .then(skill => {
-      debug(skill.userId);
       if(!skill) return res.sendStatus(404);
       if (skill.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${skill.userId})`);
@@ -71,13 +71,15 @@ router.put('/api/skill/:skillId',jsonParser,function(req,res,next){
 router.delete(`/api/skill/:skillId`,function(req,res,next){
   debug(`/api/skill/${req.params.skillId}`);
 
-  return Skill.findByIdAndRemove(req.params.skillId)
+  return Skill.findById(req.params.skillId)
     .then(skill => {
-      debug('deleted',skill);
-      res.json(skill);
+      if(!skill) return Promise.reject(createError(404, 'Skill not found'));
+
+      if(req.user._id.toString() !== skill.userId.toString())
+        return Promise.reject(createError(401,'Invalid userId'));
+
+      skill.remove({})
+        .then(() => res.sendStatus(204));
     })
-    .catch(result => {
-      next(createError(400, 'Delete failed'));
-      debug(result);
-    });
+    .catch(next);
 });

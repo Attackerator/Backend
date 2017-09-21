@@ -101,7 +101,7 @@ describe('Skills',function(){
           .expect(401);
       });
     });
-    describe.only('PUT /api/skill/:skillId',function(){
+    describe('PUT /api/skill/:skillId',function(){
       beforeEach(function(){
         return helper.addSkill(this.testCharacter._id,this.testUser._id)
           .then(skill => {
@@ -147,16 +147,18 @@ describe('Skills',function(){
       it('should return the deleted skill', function(){
         return request.delete(`/api/skill/${this.testSkill._id}`)
           .set({Authorization: `Bearer ${this.testToken}`})
-          .expect(200)
-          .expect(res => {
-            expect(res.body._id).to.equal(this.testSkill._id.toString());
-          })
+          .expect(204)
           .then(() => {
             return Skill.findById(this.testSkill._id)
               .then(deleted => {
                 expect(deleted).to.be.null;
               });
           });
+      });
+      it('should return 401 for invalid user',function(){
+        return request.delete(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
       });
     });
   });
