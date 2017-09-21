@@ -5,6 +5,12 @@ const request = require('supertest')(app);
 const debug = require('debug')('app:test/user-route');
 
 const User = require('../model/user');
+const Character = require('../model/character');
+const Stats = require('../model/stats');
+const Skills = require('../model/skills');
+const Saves = require('../model/save');
+const Spells = require('../model/spells');
+const Attacks = require('../model/attack');
 const helper = require('../test/test-helper');
 require('../lib/mongoose-connect');
 const { expect } = require('chai');
@@ -21,6 +27,9 @@ const missingPassUser = {
 const missingUserUser = {
   password: 'password!'
   ,email: 'example@example.com'
+};
+const exampleCharacter = {
+  name: 'dustinyschild'
 };
 
 describe('user routes', function(){
@@ -90,6 +99,146 @@ describe('user routes', function(){
           .send('totally not JSON at all bro!')
           .expect(400);
       });
+    });
+  });
+
+  describe.only('PUT /api/user/:id', function() {
+    beforeEach(function(){
+      return User.createUser(helper.user)
+        .then(user => this.testUser = user)
+        .then(user => user.generateToken())
+        .then(token => this.testToken = token);
+    });
+    beforeEach(function(){
+      return User.createUser(helper.hacker)
+        .then(hacker => this.hacker = hacker)
+        .then(hacker => hacker.generateToken())
+        .then(token => this.hackerToken = token);
+    });
+
+    it('should return an updated user', function() {
+      return request
+        .put(`/api/user/${this.testUser._id}`)
+        .set({Authorization: `Bearer ${this.testToken}`})
+        .send({
+          username: 'blah',
+          password: 'blah',
+        })
+        .expect(200)
+        .expect(res => {
+          expect(res.body.username).to.equal('blah');
+          expect(res.body.password).to.not.equal('$2a$10$mQGcrO3v95Psb1jhnKpql.k16fx5Q6Mn3CBwUunYVANZox7bHMxFC');
+        });
+    });
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request
+        .put(`/api/user/${this.testUser._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
+  });
+
+  describe.only('DELETE /api/user/:id',function(){
+    beforeEach(function(){
+      return User.createUser(helper.user)
+        .then(user => this.testUser = user)
+        .then(user => user.generateToken())
+        .then(token => this.testToken = token);
+    });
+    beforeEach(function(){
+      return User.createUser(helper.hacker)
+        .then(hacker => this.hacker = hacker)
+        .then(hacker => hacker.generateToken())
+        .then(token => this.hackerToken = token);
+    });
+    beforeEach(function (){
+      exampleCharacter.userId = this.testUser._id;
+      return Character.createCharacter(exampleCharacter)
+        .then(character => this.testCharacter = character);
+    });
+    beforeEach(function(){
+      return helper.addSpell(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSkill(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addStat(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addSave(this.testCharacter.id,this.testUser._id);
+    });
+    beforeEach(function(){
+      return helper.addAttack(this.testCharacter.id,this.testUser._id);
+    });
+
+    it('should return 204',function(){
+      return request.delete(`/api/user/${this.testUser._id}`)
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(res => {
+          return User.findById(res.body._id)
+            .then(deleted => {
+              debug('deleted user', deleted);
+              expect(deleted).to.be.null;
+            });
+        })
+        .then(() => {
+          return Character.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Stats.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Skills.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Saves.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Stats.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Spells.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        })
+        .then(() => {
+          return Attacks.find({userId : this.testUser._id})
+            .then(deleted => {
+              debug('deleted', deleted);
+              expect(deleted.length).to.equal(0);
+            });
+        });
+    });
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request.delete(`/api/user/${this.testUser._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
     });
   });
 });

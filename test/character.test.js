@@ -116,7 +116,7 @@ describe('Character Routes',function(){
     //TODO: add validation checks for Auth headers
   });
 
-  describe('PUT /api/stats/:id', function() {
+  describe('PUT /api/character/:id', function() {
     beforeEach(function (){
       exampleCharacter.userId = this.testUser._id;
       return Character.createCharacter(exampleCharacter)
