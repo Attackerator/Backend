@@ -46,7 +46,7 @@ router.get('/api/attack/:id', jsonParser, function(req, res, next) {
 router.put('/api/attack/:id', jsonParser, function(req, res, next) {
   debug('PUT /api/attack/:id');
 
-  Attack.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  Attack.findById(req.params.id)
     .then(attack => {
       debug('req.body', req.body);
       debug('stats', attack);

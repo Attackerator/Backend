@@ -46,7 +46,7 @@ router.get('/api/stats/:id', jsonParser, function(req, res, next) {
 router.put('/api/stats/:id', jsonParser, function(req, res, next) {
   debug('PUT /api/stats/:id');
 
-  Stats.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  Stats.findById(req.params.id)
     .then(stats => {
       debug('req.body', req.body);
       debug('stats', stats);
