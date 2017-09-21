@@ -66,6 +66,23 @@ describe('Character Routes',function(){
           expect(res.body.name).to.equal(exampleCharacter.name);
         });
     });
+    describe('GET /api/characters',function(){
+      beforeEach(function(){
+        Promise.all([
+          Character.createCharacter({name: 'Character2',userId: this.testUser._id}),
+          Character.createCharacter({name: 'Character3',userId: this.testUser._id}),
+        ]);
+      });
+      it('should return all characters for user',function(){
+        return request.get('/api/characters')
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.length).to.equal(3);
+            expect(res.body[1].name).to.equal('Character2');
+          });
+      });
+    });
   });
   describe('POST /api/character',function(){
     it('should return 200 if it saves a new character',function(){
