@@ -116,6 +116,12 @@ describe('Spell Routes',function(){
       return createSpell(helper.spell)
         .then(spell => this.testSpell = spell);
     });
+    beforeEach(function(){
+      return User.createUser(helper.hacker)
+        .then(hacker => this.hacker = hacker)
+        .then(hacker => hacker.generateToken())
+        .then(token => this.hackerToken = token);
+    });
     afterEach(function() {
       return helper.kill();
     });
@@ -135,12 +141,12 @@ describe('Spell Routes',function(){
         });
     });
     it('should return 401 for invalid user',function(){
-      return request.get(`/api/skill/${this.testSpell._id}`)
+      return request.get(`/api/spell/${this.testSpell._id}`)
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
     });
   });
-  describe.only('DELETE /api/spell/:id',function(){
+  describe('DELETE /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
@@ -166,6 +172,7 @@ describe('Spell Routes',function(){
         });
     });
     it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
       return request.delete(`/api/spell/${this.testSpell._id}`)
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);

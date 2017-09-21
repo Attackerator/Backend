@@ -68,7 +68,6 @@ router.put(`/api/spell/:id`,jsonParser,function(req,res,next){
 
 router.delete(`/api/spell/:id`,function(req,res,next){
   debug(`/api/spell/${req.params.id}`);
-  debug('THIS IS NOT A DRILL');
   Spell.findById(req.params.id)
     .then(spell => {
       debug(spell);
