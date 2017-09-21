@@ -66,6 +66,35 @@ describe('Character Routes',function(){
           expect(res.body.name).to.equal(exampleCharacter.name);
         });
     });
+    describe('GET /api/characters',function(){
+      beforeEach(async function(){
+        await Character.createCharacter({name: 'Character2',userId: this.testUser._id})
+          .then(character => this.testCharacter2 = character);
+        await Character.createCharacter({name: 'Character3',userId: this.testUser._id})
+          .then(character => this.testCharacter3 = character);
+      });
+      it('should return all characters for user',function(){
+        return request.get('/api/characters')
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.length).to.equal(3);
+            expect(res.body[0].name).to.equal('dustinyschild');
+            expect(res.body[1].name).to.equal('Character2');
+            expect(res.body[2].name).to.equal('Character3');
+          });
+      });
+      it('should return the characterIds',function(){
+        return request.get('/api/characters')
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(200)
+          .expect(res => {
+            expect(res.body[0].characterId).to.equal(this.testCharacter._id.toString());
+            expect(res.body[1].characterId).to.equal(this.testCharacter2._id.toString());
+            expect(res.body[2].characterId).to.equal(this.testCharacter3._id.toString());
+          });
+      });
+    });
   });
   describe('POST /api/character',function(){
     it('should return 200 if it saves a new character',function(){
