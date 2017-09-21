@@ -36,9 +36,41 @@ router.get('/api/attack/:id', jsonParser, function(req, res, next) {
     .then(attack => {
       if(attack.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (ower: ${attack.userId})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       res.json(attack);
+    })
+    .catch(next);
+});
+
+router.put('/api/attack/:id', jsonParser, function(req, res, next) {
+  debug('PUT /api/attack/:id');
+
+  Attack.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(attack => {
+      debug('req.body', req.body);
+      debug('stats', attack);
+      if(attack.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${attack.userId})`);
+        return Promise.reject(createError(401, 'permission denied'));
+      }
+      res.json(attack);
+    })
+    .catch(next);
+});
+
+router.delete(`/api/attack/:id`,function(req,res,next){
+  debug(`/api/attack/${req.params.id}`);
+  Attack.findById(req.params.id)
+    .then(attack => {
+      debug(attack);
+      if (!attack) return res.sendStatus(404);
+      if (attack.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${attack.userID})`);
+        return Promise.reject(createError(401, 'permission denied'));
+      }
+      attack.remove({});
+      res.sendStatus(204);
     })
     .catch(next);
 });

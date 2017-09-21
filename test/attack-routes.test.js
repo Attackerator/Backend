@@ -124,4 +124,48 @@ describe('attack routes', function() {
     });
   });
 
+  describe('PUT /api/attack/:id', function() {
+    beforeEach(function() {
+      exampleAttack.userId = this.testUser._id;
+      exampleAttack.characterId = this.testCharacter._id;
+      return createAttack(exampleAttack)
+        .then(attack => this.testAttack = attack)
+        .then(updatedAttack => {
+          return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {attack: updatedAttack}},{new: true});
+        })
+        .then(character => debug(character));
+    });
+    afterEach(function() {
+      delete this.testAttack;
+
+      return helper.kill();
+    });
+
+    it('should return updated attack', function() {
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({Authorization: `Bearer ${this.testToken}`})
+        .send({
+          name: 'test2',
+          stat: 'strength2',
+          damageType: 'blunt2',
+          diceType: 2,
+          diceCount: 2,
+          description: 'does a thing2',
+          toHitBonus: 2,
+          damageBonus: 2})
+        .expect(200)
+        .expect(res => {
+          expect(res.body.name).to.equal('test2');
+          expect(res.body.stat).to.equal('strength2');
+          expect(res.body.damageType).to.equal('blunt2');
+          expect(res.body.diceType).to.equal(2);
+          expect(res.body.diceCount).to.equal(2);
+          expect(res.body.description).to.equal('does a thing2');
+          expect(res.body.toHitBonus).to.equal(2);
+          expect(res.body.damageBonus).to.equal(2);
+        });
+    });
+  });
+
 });
