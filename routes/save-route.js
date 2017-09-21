@@ -49,13 +49,14 @@ router.put(`/api/save/:id`,jsonParser,(req,res,next) => {
     .then(save => {
       debug('HITTING HERE',save);
       if (!save) return Promise.reject(createError(404,'Save not found'));
+      
       if (save.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
       if (Object.keys(req.body).length === 0)
         return Promise.reject(createError(400, 'Invalid or missing body'));
-      debug('ARE WE HERE');
+
       for (var attr in Save.schema.paths){
         debug(attr);
         if ((attr !== '_id') && attr !== '__v'){

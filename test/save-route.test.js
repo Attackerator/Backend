@@ -18,6 +18,12 @@ describe('Save Routes',function(){
       .then(token => this.testToken = token);
   });
   beforeEach(function () {
+    return User.createUser({ username: 'imposter2', email: 'imposter2@example.com', password: 'hack' })
+      .then(hacker => this.hacker = hacker)
+      .then(hacker => hacker.generateToken())
+      .then(hackerToken => this.hackerToken = hackerToken);
+  });
+  beforeEach(function () {
     return Character.createCharacter(helper.character)
       .then(character => {
         this.character = character;
@@ -129,6 +135,24 @@ describe('Save Routes',function(){
             expect(res.body.type).to.equal('newType');
             expect(res.body.bonus).to.equal(this.testSave.bonus);
           });
+      });
+      it('should return 400 for an invalid body',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .send()
+          .expect(400);
+      });
+      it('should return 401 for invalid user',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .send({ type: 'newType'})
+          .expect(401);
+      });
+      it('should return 404 for invalid save is not found',function(){
+        return request.put(`/api/save/deadcodedeadcodedeadcode`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .send({ type: 'newType'})
+          .expect(404);
       });
     });
   });
