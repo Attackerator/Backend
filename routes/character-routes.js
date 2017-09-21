@@ -43,3 +43,30 @@ router.post('/api/character',jsonParser,(req,res,next) => {
     .then(character => res.json(character))
     .catch(next);
 });
+
+router.put('/api/character/:id', jsonParser, function(req, res, next) {
+  debug('PUT /api/character/:id');
+
+  Character.findById(req.params.id)
+    .then(character => {
+      debug('req.body', req.body);
+      debug('character', character);
+      if(character.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${character.userId})`);
+        return Promise.reject(createError(401, 'permission denied'));
+      }
+      if(Object.keys(req.body).length === 0) {
+        return Promise.reject(createError(400, 'Invalid or missing body'));
+      }
+      for (var attr in Character.schema.paths){
+        if ((attr !== '_id') && attr !== '__v'){
+          if (req.body[attr] !== undefined){
+            character[attr] = req.body[attr];
+          }
+        }
+      }
+      character.save()
+        .then(character => res.json(character));
+    })
+    .catch(next);
+});
