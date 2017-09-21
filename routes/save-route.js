@@ -35,9 +35,37 @@ router.get('/api/save/:id', (req, res, next) => {
     .then(save => {
       if (save.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
-        return next(createError(401, 'permission denied'));
+        return Promise.reject(createError(401, 'permission denied'));
       }
       res.json(save);
+    })
+    .catch(next);
+});
+
+router.put(`/api/save/:id`,jsonParser,(req,res,next) => {
+  debug(`PUT /api/save/${req.params.id}`);
+
+  Save.findById(req.params.id)
+    .then(save => {
+      debug('HITTING HERE',save);
+      if (!save) return Promise.reject(createError(404,'Save not found'));
+      if (save.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
+        return Promise.reject(createError(401, 'permission denied'));
+      }
+      if (Object.keys(req.body).length === 0)
+        return Promise.reject(createError(400, 'Invalid or missing body'));
+      debug('ARE WE HERE');
+      for (var attr in Save.schema.paths){
+        debug(attr);
+        if ((attr !== '_id') && attr !== '__v'){
+          if (req.body[attr] !== undefined){
+            save[attr] = req.body[attr];
+          }
+        }
+      }
+      save.save()
+        .then(save => res.json(save));
     })
     .catch(next);
 });

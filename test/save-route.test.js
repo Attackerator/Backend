@@ -109,4 +109,27 @@ describe('Save Routes',function(){
       });
     });
   });
+  describe.only('PUT and DELETE: ',function(){
+    beforeEach(function(){
+      helper.save.characterId = this.character._id;
+      helper.save.userId = this.testUser._id;
+      return createSave(helper.save)
+        .then(save => this.testSave = save);
+    });
+    afterEach(function() {
+      return helper.kill();
+    });
+    describe('PUT /api/save/:id',function(){
+      it('should return an updated save',function(){
+        return request.put(`/api/save/${this.testSave._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .send({ type: 'newType'})
+          .expect(200)
+          .expect(res => {
+            expect(res.body.type).to.equal('newType');
+            expect(res.body.bonus).to.equal(this.testSave.bonus);
+          });
+      });
+    });
+  });
 });
