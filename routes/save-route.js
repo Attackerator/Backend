@@ -49,7 +49,7 @@ router.put(`/api/save/:id`,jsonParser,(req,res,next) => {
     .then(save => {
       debug('HITTING HERE',save);
       if (!save) return Promise.reject(createError(404,'Save not found'));
-      
+
       if (save.userId.toString() !== req.user._id.toString()) {
         debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
         return Promise.reject(createError(401, 'permission denied'));
@@ -67,6 +67,24 @@ router.put(`/api/save/:id`,jsonParser,(req,res,next) => {
       }
       save.save()
         .then(save => res.json(save));
+    })
+    .catch(next);
+});
+
+router.delete(`/api/save/:id`,function(req,res,next){
+  debug(`/api/save/${req.params.id}`);
+
+  Save.findById(req.params.id)
+    .then(save => {
+      if (!save) return Promise.reject(createError(404, 'Save not found'));
+
+      if (save.userId.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
+        return Promise.reject(createError(401, 'permission denied'));
+      }
+
+      save.remove({})
+        .then(() => res.sendStatus(204));
     })
     .catch(next);
 });
