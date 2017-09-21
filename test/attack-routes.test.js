@@ -10,7 +10,7 @@ require('../lib/mongoose-connect');
 const helper = require('./test-helper');
 const User = require('../model/user.js');
 const Character = require('../model/character.js');
-const { createAttack } = require('../model/attack');
+const Attack = require('../model/attack');
 
 const exampleAttack = {
   name: 'test',
@@ -87,7 +87,7 @@ describe('attack routes', function() {
     beforeEach(function() {
       exampleAttack.userId = this.testUser._id;
       exampleAttack.characterId = this.testCharacter._id;
-      return createAttack(exampleAttack)
+      return Attack.createAttack(exampleAttack)
         .then(attack => this.testStats = attack)
         .then(updatedAttack => {
           return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {attack: updatedAttack}},{new: true});
@@ -120,6 +120,99 @@ describe('attack routes', function() {
     it('should return 401 for invalid user',function() {
       return request.get(`/api/attack/${this.testStats._id}`)
         .set({Authorization: `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
+  });
+
+  describe('PUT /api/attack/:id', function() {
+    beforeEach(function() {
+      exampleAttack.userId = this.testUser._id;
+      exampleAttack.characterId = this.testCharacter._id;
+      return Attack.createAttack(exampleAttack)
+        .then(attack => this.testAttack = attack)
+        .then(updatedAttack => {
+          return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {attack: updatedAttack}},{new: true});
+        })
+        .then(character => debug(character));
+    });
+    afterEach(function() {
+      delete this.testAttack;
+
+      return helper.kill();
+    });
+
+    it('should return updated attack', function() {
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({Authorization: `Bearer ${this.testToken}`})
+        .send({
+          name: 'test2',
+          stat: 'strength2',
+          damageType: 'blunt2',
+          diceType: 2,
+          diceCount: 2,
+          description: 'does a thing2',
+          toHitBonus: 2,
+          damageBonus: 2})
+        .expect(200)
+        .expect(res => {
+          expect(res.body.name).to.equal('test2');
+          expect(res.body.stat).to.equal('strength2');
+          expect(res.body.damageType).to.equal('blunt2');
+          expect(res.body.diceType).to.equal(2);
+          expect(res.body.diceCount).to.equal(2);
+          expect(res.body.description).to.equal('does a thing2');
+          expect(res.body.toHitBonus).to.equal(2);
+          expect(res.body.damageBonus).to.equal(2);
+        });
+    });
+
+    it('should return 400 with invalid body', function() {
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .send()
+        .expect(400);
+    });
+
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request
+        .put(`/api/attack/${this.testAttack._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
+        .expect(401);
+    });
+  });
+
+  describe('DELETE /api/stats/:id',function(){
+    beforeEach(function() {
+      exampleAttack.userId = this.testUser._id;
+      exampleAttack.characterId = this.testCharacter._id;
+      return Attack.createAttack(exampleAttack)
+        .then(attack => this.testAttack = attack)
+        .then(updatedAttack => {
+          return Character.findByIdAndUpdate(this.testCharacter._id,{$push: {attack: updatedAttack}},{new: true});
+        })
+        .then(character => debug(character));
+    });
+    afterEach(function() {
+      return helper.kill();
+    });
+    it('should return the deleted attack',function(){
+      return request
+        .delete(`/api/attack/${this.testAttack._id}`)
+        .set({ 'Authorization': `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(res => {
+          Attack.findById(res.body._id)
+            .then(deleted => expect(deleted).to.be.null);
+        });
+    });
+    it('should return 401 for invalid user',function(){
+      debug('this is the token',this.hackerToken);
+      return request
+        .delete(`/api/attack/${this.testAttack._id}`)
+        .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
     });
   });
