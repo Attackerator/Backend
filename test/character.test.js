@@ -165,7 +165,7 @@ describe('Character Routes',function(){
       return helper.addAttack(this.testCharacter.id,this.testUser._id);
     });
 
-    it('should return the deleted character',function(){
+    it('should return 204',function(){
       return request.delete(`/api/character/${this.testCharacter._id}`)
         .set({ 'Authorization': `Bearer ${this.testToken}`})
         .expect(204)
