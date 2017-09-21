@@ -139,7 +139,7 @@ describe('Character Routes',function(){
     });
   });
 
-  describe.only('DELETE /api/character/:id',function(){
+  describe('DELETE /api/character/:id',function(){
     beforeEach(function (){
       exampleCharacter.userId = this.testUser._id;
       return Character.createCharacter(exampleCharacter)

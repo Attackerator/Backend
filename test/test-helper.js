@@ -147,6 +147,7 @@ const deleteCharacter = function(){
     Character.remove({}),
     Skill.remove({}),
     Save.remove({}),
+    Attack.remove({}),
   ]);
 };
 
