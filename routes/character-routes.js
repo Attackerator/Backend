@@ -39,6 +39,20 @@ router.get('/api/character/:id', (req,res,next) =>{
     .catch(next);
 });
 
+router.get('/api/characters',(req,res,next) => {
+  debug('/api/characters with userId: ',req.user._id);
+
+  Character.find({userId: req.user._id})
+    .then(characters => {
+      let responseArray = characters.map(character => {
+        return {name: character.name, characterId: character._id};
+      });
+      debug(responseArray);
+      res.json(responseArray);
+    })
+    .catch(next);
+});
+
 router.post('/api/character',jsonParser,(req,res,next) => {
   debug(`POST /api/character`);
   req.body.userId = req.user._id;
