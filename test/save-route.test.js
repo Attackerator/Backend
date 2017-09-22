@@ -155,7 +155,7 @@ describe('Save Routes',function(){
           .expect(404);
       });
     });
-    describe.only('DELETE /api/save/:id',function(){
+    describe('DELETE /api/save/:id',function(){
       it('should return 204 when deleted',function(){
         return request.delete(`/api/save/${this.testSave._id}`)
           .set({ Authorization: `Bearer ${this.testToken}`})
