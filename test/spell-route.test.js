@@ -109,7 +109,7 @@ describe('Spell Routes',function(){
       });
     });
   });
-  describe.only('PUT /api/spell/:id',function(){
+  describe('PUT /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;

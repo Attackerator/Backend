@@ -76,8 +76,13 @@ router.delete(`/api/spell/:id`,function(req,res,next){
         debug(`permission denied for ${req.user._id} (owner: ${spell.userID})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-      spell.remove({});
-      res.sendStatus(204);
+
+      Character.findByIdAndUpdate(spell.characterId,{ $pull: { spells: spell._id }},{ new: true })
+        .then(character => {
+          debug(character);
+          spell.remove({});
+          res.sendStatus(204);
+        });
     })
     .catch(next);
 });
