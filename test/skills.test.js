@@ -131,7 +131,7 @@ describe('Skills',function(){
           .expect(401);
       });
     });
-    describe.only('DELETE /api/skill/:skillId',function(){
+    describe('DELETE /api/skill/:skillId',function(){
       beforeEach(function(){
         return request.post(`/api/skill/${this.testCharacter._id}`)
           .set({Authorization: `Bearer ${this.testToken}`})

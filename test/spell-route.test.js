@@ -113,7 +113,9 @@ describe('Spell Routes',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
-      return createSpell(helper.spell)
+      return request.post(`/api/spell/${this.character._id}`)
+        .set({'Authorization': `Bearer ${this.testToken}`})
+        .send(helper.spell)
         .then(spell => this.testSpell = spell);
     });
     beforeEach(function(){
