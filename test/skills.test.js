@@ -131,12 +131,14 @@ describe('Skills',function(){
           .expect(401);
       });
     });
-    describe('DELETE /api/skill/:skillId',function(){
+    describe.only('DELETE /api/skill/:skillId',function(){
       beforeEach(function(){
-        return helper.addSkill(this.testCharacter._id,this.testUser._id)
-          .then(skill => {
-            debug('Test Skill',skill);
-            this.testSkill = skill;
+        return request.post(`/api/skill/${this.testCharacter._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .send(helper.skill)
+          .then(res => {
+            debug(res.body);
+            this.testSkill = res.body;
           });
       });
       afterEach(function(){
@@ -159,6 +161,15 @@ describe('Skills',function(){
         return request.delete(`/api/skill/${this.testSkill._id}`)
           .set({Authorization: `Bearer ${this.hackerToken}`})
           .expect(401);
+      });
+      it('should delete the skill from character',function(){
+        return request.delete(`/api/skill/${this.testSkill._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(204)
+          .then(() => {
+            return Character.findById(this.testCharacter._id)
+              .then(character => expect(character.skills).to.not.include(this.testSkill._id.toString()));
+          });
       });
     });
   });
