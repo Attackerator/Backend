@@ -78,8 +78,12 @@ router.delete(`/api/skill/:skillId`,function(req,res,next){
       if(req.user._id.toString() !== skill.userId.toString())
         return Promise.reject(createError(401,'Invalid userId'));
 
-      skill.remove({})
-        .then(() => res.sendStatus(204));
+      Character.findByIdAndUpdate(skill.characterId,{ $pull: { skills: skill._id }},{ new: true })
+        .then(character => {
+          debug(character);
+          skill.remove({});
+          res.sendStatus(204);
+        });
     })
     .catch(next);
 });
