@@ -168,7 +168,10 @@ describe('Skills',function(){
           .expect(204)
           .then(() => {
             return Character.findById(this.testCharacter._id)
-              .then(character => expect(character.skills).to.not.include(this.testSkill._id.toString()));
+              .then(character => {
+                debug(character);
+                expect(character.skills).to.not.include(this.testSkill._id.toString());
+              });
           });
       });
     });
