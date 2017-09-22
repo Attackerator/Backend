@@ -184,7 +184,7 @@ describe('attack routes', function() {
     });
   });
 
-  describe.only('DELETE /api/stats/:id',function(){
+  describe('DELETE /api/stats/:id',function(){
     beforeEach(function() {
       exampleAttack.userId = this.testUser._id;
       exampleAttack.characterId = this.testCharacter._id;

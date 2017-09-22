@@ -80,8 +80,12 @@ router.delete(`/api/attack/:id`,function(req,res,next){
         debug(`permission denied for ${req.user._id} (owner: ${attack.userID})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-      attack.remove({});
-      res.sendStatus(204);
+      return Character.findByIdAndUpdate(attack.characterId,{ $pull: {attack: attack._id}},{ new: true })
+        .then(character=> {
+          debug(character);
+          attack.remove({});
+          res.sendStatus(204);
+        });
     })
     .catch(next);
 });
