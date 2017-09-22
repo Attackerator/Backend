@@ -82,9 +82,12 @@ router.delete(`/api/save/:id`,function(req,res,next){
         debug(`permission denied for ${req.user._id} (owner: ${save.userID})`);
         return Promise.reject(createError(401, 'permission denied'));
       }
-
-      save.remove({})
-        .then(() => res.sendStatus(204));
+      Character.findByIdAndUpdate(save.characterId,{ $pull: {saves: save._id}},{new: true})
+        .then(character => {
+          debug(character);
+          save.remove({});
+          res.sendStatus(204);
+        });
     })
     .catch(next);
 });

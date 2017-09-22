@@ -113,9 +113,14 @@ describe('Save Routes',function(){
   describe('PUT and DELETE: ',function(){
     beforeEach(function(){
       helper.save.characterId = this.character._id;
-      helper.save.userId = this.testUser._id;
-      return createSave(helper.save)
-        .then(save => this.testSave = save);
+      helper.save.characterId = this.testUserId;
+      return request.post(`/api/save/${this.character._id}`)
+        .set({Authorization: `Bearer ${this.testToken}`})
+        .send(helper.save)
+        .then(save => {
+          debug(save.body);
+          this.testSave = save.body;
+        });
     });
     afterEach(function() {
       return helper.kill();
@@ -150,7 +155,7 @@ describe('Save Routes',function(){
           .expect(404);
       });
     });
-    describe('DELETE /api/save/:id',function(){
+    describe.only('DELETE /api/save/:id',function(){
       it('should return 204 when deleted',function(){
         return request.delete(`/api/save/${this.testSave._id}`)
           .set({ Authorization: `Bearer ${this.testToken}`})
@@ -169,6 +174,18 @@ describe('Save Routes',function(){
         return request.delete(`/api/save/${this.testSave._id}`)
           .set({ Authorization: `Bearer ${this.hackerToken}`})
           .expect(401);
+      });
+      it('should delete the save from character',function(){
+        return request.delete(`/api/save/${this.testSave._id}`)
+          .set({Authorization: `Bearer ${this.testToken}`})
+          .expect(204)
+          .then(() => {
+            return Character.findById(this.character._id)
+              .then(character => {
+                debug(character);
+                expect(character.saves).to.not.include(this.testSave._id.toString());
+              });
+          });
       });
     });
   });
