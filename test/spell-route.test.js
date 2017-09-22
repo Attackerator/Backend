@@ -109,14 +109,14 @@ describe('Spell Routes',function(){
       });
     });
   });
-  describe('PUT /api/spell/:id',function(){
+  describe.only('PUT /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
       return request.post(`/api/spell/${this.character._id}`)
         .set({'Authorization': `Bearer ${this.testToken}`})
         .send(helper.spell)
-        .then(spell => this.testSpell = spell);
+        .then(spell => this.testSpell = spell.body);
     });
     beforeEach(function(){
       return User.createUser(helper.hacker)
@@ -148,12 +148,14 @@ describe('Spell Routes',function(){
         .expect(401);
     });
   });
-  describe('DELETE /api/spell/:id',function(){
+  describe.only('DELETE /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
-      return createSpell(helper.spell)
-        .then(spell => this.testSpell = spell);
+      return request.post(`/api/spell/${this.character._id}`)
+        .set({'Authorization': `Bearer ${this.testToken}`})
+        .send(helper.spell)
+        .then(spell => this.testSpell = spell.body);
     });
     beforeEach(function(){
       return User.createUser(helper.hacker)
@@ -178,6 +180,18 @@ describe('Spell Routes',function(){
       return request.delete(`/api/spell/${this.testSpell._id}`)
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
+    });
+    it('should delete spell from character',function(){
+      return request.delete(`/api/spell/${this.testSpell._id}`)
+        .set({'Authorization': `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(() => {
+          return Character.findById(this.testSpell.characterId)
+            .then(character => {
+              debug(character);
+              expect(character.spells).to.not.include(this.testSpell._id.toString());
+            });
+        });
     });
   });
 });
