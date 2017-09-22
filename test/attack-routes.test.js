@@ -184,7 +184,7 @@ describe('attack routes', function() {
     });
   });
 
-  describe('DELETE /api/stats/:id',function(){
+  describe.only('DELETE /api/stats/:id',function(){
     beforeEach(function() {
       exampleAttack.userId = this.testUser._id;
       exampleAttack.characterId = this.testCharacter._id;
@@ -215,6 +215,17 @@ describe('attack routes', function() {
         .set({'Authorization': `Bearer ${this.hackerToken}`})
         .expect(401);
     });
+    it('should delete the attack from character',function(){
+      return request.delete(`/api/attack/${this.testAttack._id}`)
+        .set({Authorization: `Bearer ${this.testToken}`})
+        .expect(204)
+        .then(() => {
+          return Character.findById(this.testCharacter._id)
+            .then(character => {
+              debug(character);
+              expect(character.attack).to.not.include(this.testAttack._id.toString());
+            });
+        });
+    });
   });
-
 });
