@@ -148,7 +148,7 @@ describe('Spell Routes',function(){
         .expect(401);
     });
   });
-  describe.only('DELETE /api/spell/:id',function(){
+  describe('DELETE /api/spell/:id',function(){
     beforeEach(function(){
       helper.spell.characterId = this.character._id;
       helper.spell.userId = this.testUser._id;
